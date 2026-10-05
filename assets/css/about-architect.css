@@ -1,0 +1,801 @@
+/* ================================================================
+   ABOUT / THE ARCHITECT
+   Editorial two-column bio section: heading, real photo + badge,
+   bio copy, tools grid, connect row.
+
+   Background is deliberately its own clean off-white (#faf9f6),
+   not the site's warmer --bg-primary cream (#f6f0e9) - this section's
+   brief calls for a brighter, "no vignette / no smoke" editorial
+   white. The two tones sit close enough on the page that the seam
+   reads as a deliberate change of paper, not a mismatch; loaded
+   after theme.css so it wins without needing !important.
+
+   No viewport-locked "stage" here (unlike the hero/slider), so plain
+   rem/clamp() responsive sizing is correct and does not carry the
+   zoom-fragility that a vh/vw-pinned composition would.
+   ================================================================ */
+
+:root {
+  --architect-bg: #faf9f6;
+  --architect-ink: #161513;
+  --architect-body: #3d3a36;
+  --architect-muted: #706b63; /* 5.02:1 on --architect-bg - AA for the 10-11px labels using it */
+  --architect-hairline: rgba(22, 21, 19, 0.14);
+  --architect-card-bg: #ffffff;
+  --architect-card-border: rgba(22, 21, 19, 0.08);
+}
+
+.about-architect {
+  position: relative;
+  background-color: var(--architect-bg);
+  color: var(--architect-body);
+  padding: clamp(64px, 8vw, 108px) 0 clamp(60px, 7vw, 96px);
+  overflow: hidden;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.architect-inner {
+  position: relative;
+  width: 100%;
+  max-width: 1264px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ----------------------------------------------------------------
+   Eyebrow + heading
+   ---------------------------------------------------------------- */
+/* Editorial, in the hero's type (Jost): a credit-style eyebrow between
+   two hairlines, then one sentence in two tones - the setup quiet,
+   the point in ink, with "work together" carrying the weight. */
+.architect-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin: 0 0 26px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--architect-muted);
+}
+
+.architect-eyebrow::before,
+.architect-eyebrow::after {
+  content: "";
+  width: 46px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.architect-heading {
+  max-width: 1080px;
+  margin: 0 auto clamp(48px, 5vw, 72px);
+  text-align: center;
+  font-family: "Jost", "Inter", sans-serif;
+  font-weight: 300;
+  text-transform: none;
+  font-size: clamp(34px, 4.3vw, 66px);
+  line-height: 1.1;
+  letter-spacing: -0.018em;
+  color: var(--architect-ink);
+}
+
+.architect-heading-quiet { color: #9a948b; }
+.architect-heading strong { font-weight: 600; }
+
+/* ----------------------------------------------------------------
+   Two-column layout
+   ---------------------------------------------------------------- */
+.architect-columns {
+  display: grid;
+  grid-template-columns: 47% minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 48px);
+  align-items: start;
+}
+
+/* ----------------------------------------------------------------
+   Left: photo, badge, signature
+   ---------------------------------------------------------------- */
+.architect-media {
+  display: flex;
+  flex-direction: column;
+}
+
+.architect-photo-frame {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+}
+
+/* Establishes the frame's height as a real block-flow value (410/560
+   of whatever width the frame ends up with) rather than depending on
+   `aspect-ratio` sizing a flex item's main axis, which is exactly the
+   combination that produced the wrong height. Every descendant below
+   - the badge's existing `bottom: -15%`, the pop-out's `height: 105%`
+   - was already relying on the frame having a definite height; this
+   makes that true unambiguously. */
+.architect-photo-frame::before {
+  content: "";
+  display: block;
+  padding-top: 73.2143%; /* 410 / 560 */
+}
+
+/* Clips the background photo only. The pop-out cutout is a sibling of
+   this wrapper, not a child of it, so it is free to break past the top
+   edge while the photograph underneath still reads as a normal card. */
+.architect-photo-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--architect-card-bg);
+}
+
+.architect-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  /* Background is a separate scene photo (the terrace,
+     maali_about_terrace_bg.jpg, already cropped to the card's 560:410
+     shape) with NO person in it, so it stays sharp. The cutout layer
+     above provides the 3D pop-out. */
+}
+
+.architect-badge {
+  position: absolute;
+  right: -11%;
+  bottom: -15%;
+  width: clamp(126px, 14vw, 152px);
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #faf7f1;
+  border: 1px solid rgba(22, 21, 19, 0.1);
+  box-shadow: 0 18px 36px -12px rgba(22, 21, 19, 0.18);
+  text-align: center;
+}
+
+.architect-badge-num {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: clamp(30px, 3vw, 38px);
+  line-height: 1;
+  color: var(--architect-ink);
+}
+
+.architect-badge-label {
+  margin-top: 6px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--architect-muted);
+}
+
+.architect-signature {
+  /* A true cursive/script font stack ("Segoe Script" etc.) only
+     exists on Windows and renders as a generic, inconsistent
+     `cursive` fallback everywhere else. Inter's own italic (already
+     loaded) is guaranteed consistent cross-platform and is the
+     "refined italic" alternative the brief explicitly allows. */
+  margin: 20px 0 0;
+  font-family: "Inter", sans-serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 19px;
+  letter-spacing: 0.01em;
+  color: rgba(22, 21, 19, 0.4);
+}
+
+/* ----------------------------------------------------------------
+   Right column
+   ---------------------------------------------------------------- */
+.architect-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-top: 4px;
+}
+
+.architect-bio-block { margin-bottom: 28px; }
+
+.architect-rule {
+  width: 44px;
+  height: 1px;
+  background: var(--architect-hairline);
+  margin-bottom: 22px;
+}
+
+.architect-bio {
+  margin: 0 0 20px;
+  max-width: 62ch;
+  font-size: clamp(16px, 1.3vw, 18px);
+  font-weight: 400;
+  line-height: 1.62;
+  color: var(--architect-body);
+}
+
+.architect-bio:last-child { margin-bottom: 0; }
+
+.architect-bio strong {
+  font-weight: 600;
+  color: var(--architect-ink);
+}
+
+.architect-block + .architect-block { margin-top: 28px; }
+
+.architect-label-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.architect-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--architect-ink);
+  white-space: nowrap;
+}
+
+.architect-label-rule {
+  flex: 1 1 auto;
+  max-width: 90px;
+  height: 1px;
+  background: var(--architect-hairline);
+}
+
+/* ----------------------------------------------------------------
+   Tools grid
+   ---------------------------------------------------------------- */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 6px 10px;
+  aspect-ratio: 1;
+  background: var(--architect-card-bg);
+  border: 1px solid var(--architect-card-border);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(22, 21, 19, 0.03);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(22, 21, 19, 0.16);
+  box-shadow: 0 10px 22px rgba(22, 21, 19, 0.08);
+}
+
+.tool-card-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.tool-card-name {
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--architect-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ----------------------------------------------------------------
+   Connect row
+   ---------------------------------------------------------------- */
+.connect-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(20px, 2.4vw, 34px);
+}
+
+.connect-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  color: var(--architect-body);
+  transition: opacity 0.25s ease;
+}
+
+.connect-link:hover { opacity: 0.68; }
+
+.connect-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--architect-ink);
+  color: #fff;
+}
+
+.connect-icon svg { display: block; }
+
+.connect-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--architect-body);
+}
+
+/* ----------------------------------------------------------------
+   Bottom corner details
+   Normal-flow row (not absolutely positioned): the section has no
+   viewport-locked "stage" height to pin against - reserving enough
+   bottom padding to float these above an absolute bottom:0 would
+   just be recreating flex/grid's own job by hand. A flex row placed
+   after the columns, with its own margin-top, can't overlap the
+   connect row above it.
+   ---------------------------------------------------------------- */
+.architect-footnote,
+.architect-sidenote {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--architect-muted);
+}
+
+.architect-footnote { text-align: left; }
+.architect-footnote em { font-style: normal; opacity: 0.6; padding: 0 0.4em; }
+
+.architect-details-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+.architect-sidenote { display: none; }
+
+@media (min-width: 700px) {
+  .architect-sidenote {
+    display: block;
+    text-align: right;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Entrance animation
+   AOS (already loaded sitewide) drives fade-up on [data-aos]; this
+   only guarantees content is visible if AOS's own script fails, and
+   removes motion under reduced-motion regardless of AOS's own
+   handling of that preference.
+   ---------------------------------------------------------------- */
+.about-architect [data-aos] {
+  opacity: 1;
+}
+
+.about-architect [data-aos="fade-up"] {
+  transition-duration: 700ms;
+  transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-architect [data-aos] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+
+/* Tablet: keep two columns, let the tool grid breathe less tightly. */
+@media (max-width: 991px) {
+  .architect-columns {
+    grid-template-columns: 44% 1fr;
+    gap: 32px;
+  }
+  .architect-photo-frame { max-width: 100%; }
+  .tool-grid { gap: 8px; }
+  .tool-card-name { font-size: 9.5px; }
+}
+
+/* Mobile: stack, image first, badge still overlaps, grid to 3 columns. */
+@media (max-width: 767px) {
+  .about-architect { padding: 56px 0 64px; }
+  .architect-inner { padding: 0 20px; }
+
+  .architect-heading {
+    font-size: clamp(28px, 8.4vw, 38px);
+    margin-bottom: 34px;
+  }
+  .architect-heading br { display: none; }
+  .architect-heading-quiet { display: block; margin-bottom: 6px; }
+
+  .architect-columns {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .architect-media { align-items: center; }
+
+  .architect-photo-frame {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  .architect-badge {
+    /* The photo fills the full padded width on mobile (no side
+       margin of its own), so the badge's overflow eats directly into
+       .architect-inner's 20px side padding. -8% of a ~350px photo
+       (28px) exceeded that 20px and got clipped by the section's own
+       overflow:hidden. -5% (~17.5px) stays inside it. */
+    width: 108px;
+    right: -5%;
+    bottom: -10%;
+  }
+
+  .architect-badge-num { font-size: 26px; }
+  .architect-badge-label { font-size: 9px; }
+
+  .architect-signature { text-align: center; width: 100%; }
+
+  .architect-bio { max-width: 100%; }
+
+  .tool-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .connect-row {
+    gap: 18px 26px;
+  }
+
+  .architect-details-row {
+    justify-content: center;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .architect-footnote { text-align: center; }
+}
+
+@media (max-width: 420px) {
+  .tool-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+
+/* ================================================================
+   MOTION - added on top of the approved design, nothing repositioned
+   See assets/js/architect-motion.js. Every rule here animates only
+   transform and opacity.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   1. Word-by-word scroll reveal
+   ----------------------------------------------------------------
+   Words sit in their final position from the first frame; only their
+   opacity changes, so nothing reflows and no word ever flies in.
+   Headline words are inline-block so they can carry the 4px lift;
+   body words stay inline and fade only, which keeps them identical
+   to plain text for screen readers.
+   ---------------------------------------------------------------- */
+.aw-word {
+  transition: opacity 220ms ease, transform 220ms ease;
+  will-change: opacity;
+}
+
+.aw-word--lead {
+  display: inline-block;
+  opacity: 0.18;
+  transform: translateY(4px);
+}
+
+.aw-word--body {
+  opacity: 0.4;
+}
+
+.aw-word.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ----------------------------------------------------------------
+   2. Tool marquee
+   ----------------------------------------------------------------
+   The track is the original .tool-grid with one duplicate set
+   appended, so the loop point is exactly half the track and there is
+   no jump. Card width is pinned by JS to the width the 7-column grid
+   was already producing, so every card keeps its approved size.
+   ---------------------------------------------------------------- */
+.tools-marquee {
+  position: relative;
+  /* width:100% breaks the circular measure: without it the marquee
+     sizes to its max-content track, which sizes to the card width,
+     which is derived from the marquee. */
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  /* A narrow fade so cards arrive and leave rather than snapping at
+     the edge. Deliberately shallow. */
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    #000 6%,
+    #000 94%,
+    transparent 100%
+  );
+}
+
+/* The grid becomes a single row; the original grid rules are replaced
+   rather than edited, so no-JS visitors still get the approved grid. */
+.tool-grid.tools-marquee-track {
+  display: flex;
+  grid-template-columns: none;
+  width: max-content;
+  flex-wrap: nowrap;
+  animation: toolsMarquee 30s linear infinite;
+}
+
+.tools-marquee-track .tool-card {
+  width: var(--tool-card-w, 96px);
+  flex: 0 0 var(--tool-card-w, 96px);
+}
+
+@keyframes toolsMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  /* Half the track is exactly the original set plus its trailing gap,
+     which is where the duplicate begins. */
+  to { transform: translate3d(calc(-50% - 5px), 0, 0); }
+}
+
+.tools-marquee:hover .tools-marquee-track,
+.tools-marquee:focus-within .tools-marquee-track {
+  animation-play-state: paused;
+}
+
+/* ----------------------------------------------------------------
+   3. Badge shimmer
+   ----------------------------------------------------------------
+   One narrow diagonal pass, then a long wait. The badge itself does
+   not move, rotate or change colour.
+   ---------------------------------------------------------------- */
+.architect-badge {
+  overflow: hidden;
+}
+
+.architect-badge::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0) 38%,
+    rgba(255, 255, 255, 0.65) 48%,
+    rgba(255, 255, 255, 0.18) 55%,
+    transparent 64%
+  );
+  transform: translateX(-140%) skewX(-18deg);
+  opacity: 0;
+  animation: badgeShine 6s ease-in-out infinite;
+}
+
+@keyframes badgeShine {
+  0%   { transform: translateX(-140%) skewX(-18deg); opacity: 0; }
+  5%   { opacity: 1; }
+  22%  { transform: translateX(140%) skewX(-18deg); opacity: 0; }
+  100% { transform: translateX(140%) skewX(-18deg); opacity: 0; }
+}
+
+/* ----------------------------------------------------------------
+   4. Magnetic social controls
+   ----------------------------------------------------------------
+   JS writes the transform on the icon and label directly. The anchor
+   itself is never transformed, so the click target stays exactly
+   where it is and focus styles are untouched.
+   ---------------------------------------------------------------- */
+.connect-icon,
+.connect-label {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease, color 220ms ease;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .connect-link:hover .connect-icon {
+    box-shadow: 0 6px 14px -8px rgba(22, 21, 19, 0.5);
+  }
+  .connect-link:hover .connect-label {
+    color: var(--architect-ink);
+  }
+  /* While the magnet has hold of it, JS owns the transform and the
+     CSS transition would fight the lerp. */
+  .connect-link.is-magnetic .connect-icon,
+  .connect-link.is-magnetic .connect-label {
+    transition: box-shadow 220ms ease, color 220ms ease;
+  }
+}
+
+/* Focus must never be a moving target, and the ring stays as-is. */
+.connect-link:focus-visible .connect-icon,
+.connect-link:focus-visible .connect-label {
+  transform: none !important;
+}
+
+/* ----------------------------------------------------------------
+   Reduced motion - content stays, movement goes
+   ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .aw-word,
+  .aw-word--lead,
+  .aw-word--body {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .tool-grid.tools-marquee-track { animation: none; }
+  .architect-badge::after { animation: none; opacity: 0; }
+  .connect-icon,
+  .connect-label { transition: none; transform: none !important; }
+}
+
+
+/* ----------------------------------------------------------------
+   5. Two-stage scroll pacing
+   ----------------------------------------------------------------
+   Stage 1 is the eyebrow and the headline; stage 2 is everything
+   below it. The lower half stays at opacity 0 until the reader has
+   scrolled far enough to have finished the headline, so the section
+   opens on the statement alone rather than on the whole page at once.
+
+   Nothing here changes layout: staged elements keep their box and
+   their place in flow the entire time, so no responsive rule and no
+   spacing is affected - only whether they are painted.
+
+   data-staged is set by JS, so with JS off or broken every element
+   renders normally at full opacity.
+   ---------------------------------------------------------------- */
+.about-architect[data-staged] [data-arch-stage] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-architect[data-staged].is-stage-1 [data-arch-stage="1"],
+.about-architect[data-staged].is-stage-2 [data-arch-stage="2"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-architect[data-staged] [data-arch-delay="80"] { transition-delay: 80ms; }
+.about-architect[data-staged] [data-arch-delay="120"] { transition-delay: 120ms; }
+.about-architect[data-staged] [data-arch-delay="220"] { transition-delay: 220ms; }
+.about-architect[data-staged] [data-arch-delay="320"] { transition-delay: 320ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .about-architect[data-staged] [data-arch-stage] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms;
+  }
+}
+
+
+/* ----------------------------------------------------------------
+   6. Portrait: a still photograph
+   ----------------------------------------------------------------
+   No pointer tilt (removed 2026-09-29 at the owner's request). The
+   scroll entrance stays (architect-sequence.js): Maali rises in first,
+   then the background drops in behind him. It drives the cutout and
+   the badge through the --pop-* / --badge-* variables below, so their
+   own positioning transforms are never overwritten.
+   ---------------------------------------------------------------- */
+/* Shadow lives on .architect-photo-frame because .architect-photo-bg
+   has overflow: hidden which would clip a box-shadow. The frame has
+   neither restriction. */
+.architect-photo-frame {
+  box-shadow: 0 18px 38px -26px rgba(22, 21, 19, 0.35);
+}
+
+.architect-badge {
+  transform: translateY(var(--badge-y, 0px));
+  opacity: var(--badge-o, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .architect-badge { transform: none; }
+}
+
+
+/* ----------------------------------------------------------------
+   7. Portrait pop-out
+   ----------------------------------------------------------------
+   .architect-photo-bg (z 1) is the clipped background card, exactly
+   as before. .architect-photo-pop (z 2) is the same subject, cut out
+   to a clean single alpha layer and floated in front of it, tall
+   enough that his head clears the top edge by ~5% of the card's own
+   height (~20px at the 560x410 desktop size, and it scales with the
+   card at every breakpoint since it is a percentage of the frame's
+   now-definite height rather than a fixed pixel count). The badge
+   (z 3) stays on top of both, exactly where it already was.
+
+   This is not the matted cutout from an earlier attempt on this
+   section - that one carried fragments of its source background
+   (a fence post, a wall panel) into the card because the matte was
+   produced by us with a generic segmentation pass. This asset was
+   supplied pre-cut and checked: one 918,485px connected region and
+   nothing else above single-digit noise pixels, so there is no
+   debris left to show once it clears the frame.
+   ---------------------------------------------------------------- */
+.architect-photo-bg {
+  z-index: 1;
+}
+
+/* Pop-out cutout: the transparent cutout of Maali sits above the
+   background. Only his head/hair breaks past the top edge of the
+   card by ~18px (roughly 4.4% of the 410px frame height). The rest
+   of his body stays aligned inside the card boundaries. */
+.architect-photo-pop {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  z-index: 2;
+  height: 104.4%;          /* head pops ~18px above the 410px frame */
+  /* The terrace pair was photographed together: the scene and the
+     cutout come from the same shot (they were the hero's two layers), and
+     maali_about_terrace_bg.jpg is cropped from the scene around where the
+     cutout sits in it. The cutout (maali_about_terrace_cutout.png) is
+     cropped tight from his hair to where the file cuts his legs, so at
+     this height his hair clears the top edge, he sits on the lounger as
+     in the original shot, and the cut sits on the card's bottom edge. */
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  object-position: bottom center;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(var(--pop-y, 0px));
+  opacity: var(--pop-o, 1);
+  /* Subtle drop shadow that follows the cutout's silhouette -
+     two passes: a tight contact shadow and a broader ambient one. */
+  filter: drop-shadow(0 10px 16px rgba(22, 21, 19, 0.18))
+    drop-shadow(0 26px 34px rgba(22, 21, 19, 0.18));
+}
+
+.architect-badge {
+  z-index: 3;
+}

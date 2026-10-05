@@ -1,0 +1,627 @@
+/* ================================================================
+   FINAL CTA + FOOTER
+   Matched to the approved 2000 x 766 reference (CTA band 552, footer
+   214). Two photographic layers, as supplied:
+     assets/images/cta/maali-cta-background.jpg  (1365 x 776 plate)
+     assets/images/cta/maali-cta-cutout.png      (662 x 776, transparent)
+
+   SCALING MODEL
+   Like the hero, every desktop size is `calc(N * var(--cta-u))`, where
+   N is the value in reference pixels and --cta-u is one reference
+   pixel at the current viewport (100vw / 2000). Type, spacing and both
+   photo layers therefore keep the reference's proportions at any width
+   instead of the copy freezing at a px size while the photo keeps
+   growing. Readability floors keep the smallest labels legible at the
+   narrow end of desktop; below 1100px the section stacks instead.
+
+   Placement of the two layers was measured by template-matching each
+   file against the reference (plate r=0.80 at 1.17x, cutout r=0.79 at
+   0.84x). Both are anchored from the RIGHT, so on screens wider than
+   the reference the photo stays with the right edge and the extra
+   width opens up as the plate's own dark left side.
+   ================================================================ */
+
+.final-page {
+  position: relative;
+  width: 100%;
+  --cta-u: clamp(0.55px, calc(100vw / 2000), 1.2px);
+}
+
+/* ----------------------------------------------------------------
+   CTA band
+   ---------------------------------------------------------------- */
+.final-cta {
+  --cta-ink: #191d20;            /* reference, sampled at the far left */
+  --cta-cream: #f7f4ee;
+  --cta-eyebrow: #bcb5a1;
+  --cta-script: #dfbe92;
+  --cta-btn: #fceace;
+  --cta-btn-ink: #182126;
+
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  z-index: 0;
+  height: calc(552 * var(--cta-u));
+  background-color: var(--cta-ink);
+  color: var(--cta-cream);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Background plate: 1.17 x its 1365 x 776 file, left edge at x=420 and
+   top at y=-208 in the reference, i.e. right edge 17 past the band. */
+.cta-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cta-bg img {
+  position: absolute;
+  top: calc(-208 * var(--cta-u));
+  right: calc(-17 * var(--cta-u));
+  width: calc(1597 * var(--cta-u));
+  height: calc(908 * var(--cta-u));
+  max-width: none;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* The plate's own left side is already dark; this only settles the text
+   side onto the flat reference tone and leaves the scene untouched. */
+.cta-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(25, 29, 32, 1) 0,
+    rgba(25, 29, 32, 1) calc(420 * var(--cta-u)),
+    rgba(25, 29, 32, 0.55) calc(700 * var(--cta-u)),
+    rgba(25, 29, 32, 0.18) calc(1000 * var(--cta-u)),
+    rgba(25, 29, 32, 0) calc(1250 * var(--cta-u))
+  );
+}
+
+/* ----------------------------------------------------------------
+   Copy - positions are the reference's, converted from ink bounds to
+   CSS boxes with Inter's metrics (cap height 0.727em, ascent 0.969em).
+   ---------------------------------------------------------------- */
+.cta-inner {
+  position: relative;
+  z-index: 5;
+  height: 100%;
+  padding: calc(101.8 * var(--cta-u)) 0 0 calc(145 * var(--cta-u));
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+.cta-copy {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: max-content;
+  pointer-events: auto;
+}
+
+.cta-eyebrow {
+  margin: 0;
+  font-size: max(calc(16.4 * var(--cta-u)), 11px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--cta-eyebrow);
+}
+
+/* .final-cta prefix: the theme styles every h2 in its condensed,
+   uppercase display face, which the reference headline is not. */
+.final-cta .cta-headline {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  text-transform: none;
+  margin: calc(34.4 * var(--cta-u)) 0 0;
+  font-size: calc(70.6 * var(--cta-u));
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 0.88;
+  color: var(--cta-cream);
+}
+
+.cta-headline .cta-break {
+  display: block;
+}
+
+.cta-subtext {
+  margin: calc(36.7 * var(--cta-u)) 0 0;
+  font-size: calc(26.1 * var(--cta-u));
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;           /* one line, as in the reference */
+  color: rgba(245, 241, 233, 0.86);
+}
+
+.cta-actions {
+  display: flex;
+  align-items: center;
+  gap: calc(29 * var(--cta-u));
+  margin-top: calc(51.4 * var(--cta-u));
+}
+
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(17 * var(--cta-u));
+  height: calc(77 * var(--cta-u));
+  padding: 0;
+  border-radius: calc(8 * var(--cta-u));
+  box-sizing: border-box;
+  font-size: calc(23.4 * var(--cta-u));
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  line-height: 1;
+  transition: transform 200ms ease, background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.cta-btn:focus-visible {
+  outline: 2px solid var(--cta-script);
+  outline-offset: 3px;
+}
+
+.cta-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cta-btn--primary {
+  width: calc(290 * var(--cta-u));
+  background: var(--cta-btn);
+  border: 1px solid #efd9b6;
+  color: var(--cta-btn-ink);
+}
+
+.cta-btn--primary:hover {
+  background: #fff3e0;
+  color: var(--cta-btn-ink);
+}
+
+.cta-btn--ghost {
+  width: calc(306 * var(--cta-u));
+  background: transparent;
+  border: max(1px, calc(1.5 * var(--cta-u))) solid rgba(236, 228, 214, 0.62);
+  color: var(--cta-cream);
+}
+
+.cta-btn--ghost:hover {
+  border-color: rgba(236, 228, 214, 0.95);
+  color: #fff;
+}
+
+.cta-btn-arrow {
+  display: inline-flex;
+  width: calc(24 * var(--cta-u));
+  height: calc(24 * var(--cta-u));
+}
+
+.cta-btn-arrow svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ----------------------------------------------------------------
+   Photo side
+   ---------------------------------------------------------------- */
+.cta-visual {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Maali: 0.84 x the 662 x 776 cutout (556 x 652), head at y=1, right edge
+   210 in from the band's right. The band crops him at the thighs, as in
+   the reference. */
+.maali-cutout {
+  position: absolute;
+  top: calc(1 * var(--cta-u));
+  right: calc(210 * var(--cta-u));
+  z-index: 3;
+  height: calc(652 * var(--cta-u));
+  width: auto;
+  max-width: none;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Handwritten note, left of Maali, rising ~12deg. The tilt lives on an
+   inner wrapper so the scroll entrance can animate the outer element's
+   transform without wiping the rotation. */
+.handwritten-message {
+  position: absolute;
+  left: calc(1106 * var(--cta-u));
+  top: calc(271 * var(--cta-u));
+  z-index: 4;
+  margin: 0;
+  color: var(--cta-script);
+  /* Allura: the thin, slanted monoline script the reference uses (Caveat,
+     used before, is a much heavier hand). */
+  font-family: "Allura", "Caveat", cursive;
+  font-size: calc(46 * var(--cta-u));
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+
+.handwritten-tilt {
+  display: block;
+  transform: rotate(-15deg);
+  transform-origin: left bottom;
+}
+
+.handwritten-tilt > span {
+  display: block;
+  white-space: nowrap;
+}
+
+.handwritten-l2 {
+  padding-left: calc(50 * var(--cta-u));
+}
+
+.handwritten-tilt::after {
+  content: "";
+  display: block;
+  width: calc(180 * var(--cta-u));
+  height: calc(28 * var(--cta-u));
+  margin: calc(-2 * var(--cta-u)) 0 0 calc(66 * var(--cta-u));
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 28' fill='none'%3E%3Cpath d='M3 22C52 12 108 6 177 4' stroke='%23DFBE92' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M22 25C68 18 110 14 150 12' stroke='%23DFBE92' stroke-width='1.6' stroke-linecap='round' opacity='0.85'/%3E%3C/svg%3E")
+    left center / 100% 100% no-repeat;
+}
+
+/* ----------------------------------------------------------------
+   Footer - 214 tall in the reference, content 145 in from each side
+   ---------------------------------------------------------------- */
+.site-footer-final {
+  --ft-bg: #f7f1ea;
+  --ft-ink: #1c1a17;
+  --ft-muted: #8a857c;
+
+  position: relative;
+  z-index: 1;
+  background: var(--ft-bg);
+  color: var(--ft-ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  padding: calc(35.6 * var(--cta-u)) calc(145 * var(--cta-u)) calc(40 * var(--cta-u));
+}
+
+.site-footer-final-inner {
+  width: 100%;
+}
+
+.site-footer-top {
+  display: grid;
+  grid-template-columns: calc(582 * var(--cta-u)) auto 1fr;
+  align-items: start;
+  padding-bottom: calc(37.5 * var(--cta-u));
+}
+
+.site-footer-brand-name {
+  margin: 0;
+  font-size: max(calc(24.7 * var(--cta-u)), 16px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ft-ink);
+}
+
+.site-footer-brand-sub {
+  margin: calc(8.8 * var(--cta-u)) 0 0;
+  font-size: max(calc(21.4 * var(--cta-u)), 13px);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ft-muted);
+}
+
+.site-footer-nav {
+  display: flex;
+  gap: calc(45 * var(--cta-u));
+  margin-top: calc(20.9 * var(--cta-u));
+}
+
+.site-footer-nav a {
+  color: var(--ft-ink);
+  text-decoration: none;
+  font-size: max(calc(18.3 * var(--cta-u)), 13px);
+  font-weight: 400;
+  line-height: 1;
+  transition: opacity 180ms ease;
+}
+
+.site-footer-nav a:hover { opacity: 0.55; }
+.site-footer-nav a:focus-visible {
+  outline: 2px solid #1c1a17;
+  outline-offset: 3px;
+}
+
+.site-footer-social {
+  display: flex;
+  justify-content: flex-end;
+  /* Gaps net of the ~2.5 of padding inside each 31-wide icon box. */
+  gap: calc(48 * var(--cta-u));
+  margin-top: calc(21 * var(--cta-u));
+  margin-right: calc(6.5 * var(--cta-u));
+}
+
+.site-footer-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(16.5 * var(--cta-u));
+  color: var(--ft-ink);
+  text-decoration: none;
+  font-size: max(calc(18.7 * var(--cta-u)), 13px);
+  font-weight: 400;
+  line-height: 1;
+  transition: opacity 180ms ease;
+}
+
+.site-footer-social a:hover { opacity: 0.55; }
+.site-footer-social a:focus-visible {
+  outline: 2px solid #1c1a17;
+  outline-offset: 3px;
+}
+
+.site-footer-social svg {
+  /* 31 box -> ~26 of ink, the reference icons' size */
+  width: max(calc(31 * var(--cta-u)), 18px);
+  height: max(calc(31 * var(--cta-u)), 18px);
+  flex: none;
+}
+
+.site-footer-divider {
+  border: 0;
+  border-top: 1px solid rgba(28, 26, 23, 0.13);
+  margin: 0;
+}
+
+.site-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-top: calc(26.5 * var(--cta-u));
+}
+
+.site-footer-copy {
+  margin: 0;
+  font-size: max(calc(18.5 * var(--cta-u)), 12px);
+  line-height: 1;
+  color: var(--ft-muted);
+}
+
+.site-footer-tagline {
+  margin: 0;
+  font-size: max(calc(16.5 * var(--cta-u)), 11px);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ft-muted);
+  white-space: nowrap;
+}
+
+.final-page.is-armed .cta-bg,
+.final-page.is-armed .maali-cutout,
+.final-page.is-armed .cta-anim,
+.final-page.is-armed .handwritten-message,
+.final-page.is-armed .site-footer-final-inner {
+  will-change: transform, opacity;
+}
+
+/* ----------------------------------------------------------------
+   Stacked (below 1100px): copy on top, photo scene beneath. Sizes
+   switch to their own fluid ramp, since the reference ratio no longer
+   fits side by side.
+   ---------------------------------------------------------------- */
+@media (max-width: 1099px) {
+  .final-cta {
+    height: auto;
+  }
+
+  .cta-bg {
+    top: auto;
+    bottom: 0;
+    height: clamp(360px, 62vw, 520px);
+  }
+
+  /* Plate covers the scene block, lounger kept on screen. */
+  .cta-bg img {
+    top: 0;
+    right: auto;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 68% 60%;
+  }
+
+  .cta-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(25, 29, 32, 1) 0%,
+      rgba(25, 29, 32, 1) calc(100% - clamp(360px, 62vw, 520px)),
+      rgba(25, 29, 32, 0.55) calc(100% - clamp(360px, 62vw, 520px) + 70px),
+      rgba(25, 29, 32, 0.1) calc(100% - clamp(360px, 62vw, 520px) + 170px),
+      rgba(25, 29, 32, 0) 100%
+    );
+  }
+
+  .cta-inner {
+    height: auto;
+    padding: 56px 28px 0;
+  }
+
+  .cta-copy {
+    width: 100%;
+  }
+
+  .cta-eyebrow {
+    font-size: 11px;
+  }
+
+  .final-cta .cta-headline {
+    margin-top: 20px;
+    font-size: clamp(34px, 8.4vw, 56px);
+    line-height: 0.98;
+  }
+
+  .cta-subtext {
+    margin-top: 18px;
+    font-size: clamp(15px, 3.8vw, 19px);
+    line-height: 1.45;
+    white-space: normal;
+  }
+
+  .cta-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    max-width: 440px;
+    margin-top: 28px;
+  }
+
+  .cta-btn,
+  .cta-btn--primary,
+  .cta-btn--ghost {
+    width: 100%;
+    height: 54px;
+    gap: 12px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+
+  .cta-btn-arrow {
+    width: 18px;
+    height: 18px;
+  }
+
+  .cta-visual {
+    position: relative;
+    inset: auto;
+    height: clamp(360px, 62vw, 520px);
+    margin-top: 24px;
+  }
+
+  .maali-cutout {
+    top: auto;
+    bottom: 0;
+    right: 6%;
+    height: 96%;
+  }
+
+  .handwritten-message {
+    left: 7%;
+    top: 16%;
+    font-size: clamp(26px, 5.4vw, 38px);
+  }
+
+  .handwritten-l2 { padding-left: 1em; }
+
+  .handwritten-tilt::after {
+    width: 4.2em;
+    height: 0.62em;
+    margin: 0.1em 0 0 1.4em;
+  }
+
+  .site-footer-final {
+    padding: 36px 28px 26px;
+  }
+
+  .site-footer-top {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 22px;
+    padding-bottom: 24px;
+  }
+
+  .site-footer-brand-name { font-size: 18px; }
+  .site-footer-brand-sub { margin-top: 6px; font-size: 14px; }
+
+  .site-footer-nav,
+  .site-footer-social {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 14px 24px;
+    margin-top: 0;
+  }
+
+  .site-footer-nav a,
+  .site-footer-social a { font-size: 15px; }
+
+  .site-footer-social a { gap: 8px; }
+  .site-footer-social svg { width: 18px; height: 18px; }
+  /* four links: two even rows rather than three-and-one */
+  .site-footer-social { display: grid; grid-template-columns: repeat(2, max-content); }
+
+  .site-footer-bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top: 20px;
+  }
+
+  .site-footer-copy { font-size: 12px; }
+  .site-footer-tagline { font-size: 11px; white-space: normal; }
+}
+
+@media (max-width: 480px) {
+  .cta-inner { padding: 48px 20px 0; }
+  .maali-cutout { right: -4%; }
+  /* The -15deg tilt swings the note's top-left ~16px outward, so it
+     needs this much room to keep the opening quote on screen. */
+  .handwritten-message { left: 10%; top: 12%; }
+  .site-footer-final { padding: 32px 20px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .final-page.is-armed .cta-bg,
+  .final-page.is-armed .maali-cutout,
+  .final-page.is-armed .cta-anim,
+  .final-page.is-armed .handwritten-message,
+  .final-page.is-armed .site-footer-final-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .cta-btn { transition: none; }
+  .cta-btn:hover { transform: none; }
+}
+
+/* ----------------------------------------------------------------
+   Footer row with four contact links. The original three-column grid
+   gave the links only what was left after a fixed-width brand column,
+   so with WhatsApp added they were squeezed until the labels broke
+   letter by letter (about 1100-1500px wide). The row now flows: brand,
+   menu and links each keep their natural width, and when they no
+   longer fit side by side the links move to their own line, kept to
+   the right. Labels never break.
+   ---------------------------------------------------------------- */
+@media (min-width: 1100px) {
+  .site-footer-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    column-gap: calc(64 * var(--cta-u));
+    row-gap: 22px;
+  }
+  .site-footer-brand { flex: 0 0 auto; min-width: calc(300 * var(--cta-u)); }
+  .site-footer-nav { flex: 0 0 auto; }
+  .site-footer-social { flex: 0 0 auto; margin-left: auto; }
+}
+.site-footer-nav a,
+.site-footer-social a { white-space: nowrap; }

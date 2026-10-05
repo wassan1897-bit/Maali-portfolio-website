@@ -1,0 +1,155 @@
+/* ================================================================
+   WHITE PAGE SECTIONS
+   Every section except the hero and the Featured Projects stage sits
+   on pure white (owner's request, 2026-10-01): About, Video Demos,
+   testimonials, tech stack and the footer. The dark call-to-action
+   band keeps its photograph. Loaded last so it wins over theme.css
+   and the per-section stylesheets without editing them.
+   ================================================================ */
+
+html,
+body { background-color: #ffffff; }
+
+/* ---------------- Sections ---------------- */
+
+
+#services.feature-three-area,
+.testimonial-three-area,
+.brand-three-area {
+  background-color: #ffffff !important;
+}
+
+.site-footer-final {
+  --ft-bg: #ffffff;
+  background-color: #ffffff;
+}
+
+/* Raised cards, tiles and pills read the theme's surface tokens (some
+   with !important, in new-slider.css), so the tokens themselves are
+   redefined inside the white sections: a soft neutral grey instead of
+   the warm tint, which keeps them lifting off the white. */
+.about-architect,
+#services,
+.testimonial-three-area,
+.brand-three-area,
+.site-footer-final {
+  --bg-surface: #f7f7f6;
+  --bg-surface-rgb: 247, 247, 246;
+  --bg-surface-sunken: #f0efed;
+}
+
+/* ---------------- Projects: cream stage, white edges ----------------
+   The stage keeps its look; only its top and bottom blend into the
+   white sections around it, so neither edge shows a seam. */
+#projects.portfolio-stage { background-color: #ffffff; }
+
+#projects .pf-ambient {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 55%, rgba(0, 0, 0, 0.45) 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 55%, rgba(0, 0, 0, 0.45) 80%, transparent 100%);
+}
+
+#projects .pf-ambient::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.5) 16%, rgba(246, 240, 233, 0.12) 30%, rgba(246, 240, 233, 0.12) 66%, rgba(255, 255, 255, 0.6) 84%, rgba(255, 255, 255, 0.9) 100%),
+    rgba(246, 240, 233, 0.16);
+}
+
+/* ---------------- Hero -> About: one white ----------------
+   The hero's exit wipes Maali's photo away to white and spreads that
+   white over the whole screen (hero-split.js); About is the same
+   white, so it arrives inside it with no edge. While the screen is
+   empty white, a statement fills it (.split-hero__statement). */
+.about-architect {
+  --architect-bg: #ffffff;
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+}
+
+/* the photo column is white behind the photo, so its wipe leaves white */
+.split-hero__photo { background: #ffffff; }
+
+.split-hero__flood {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background: #ffffff;
+  opacity: 0;
+}
+
+/* centred in the screen the visitor sees: the held hero's last
+   screenful (all of it on desktop, the bottom of it on phones) */
+.split-hero__statement {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 0 24px;
+  text-align: center;
+  font-family: "Jost", "Inter", sans-serif;
+  color: #121212;
+}
+
+.split-hero__statement-kick {
+  font: 500 11px/1 "Inter", sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #6d675f;
+}
+
+.split-hero__statement-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0 0.32em;
+  margin: 0;
+  font-size: clamp(42px, 6.6vw, 120px);
+  font-weight: 300;
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+}
+
+.split-hero__statement-line .w { display: inline-block; overflow: hidden; padding-bottom: 0.06em; }
+.split-hero__statement-line .w > * { display: inline-block; }
+.split-hero__statement-line .arrow { color: #b9b2a8; font-weight: 300; }
+.split-hero__statement-line b { font-weight: 600; }
+
+.split-hero__statement-rule {
+  display: block;
+  width: min(420px, 60vw);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(18, 18, 18, 0.35), transparent);
+  transform-origin: center;
+}
+
+@media (max-width: 767px) {
+  .split-hero__statement-line { flex-direction: column; align-items: center; font-size: 13vw; }
+}
+
+/* The hero photo's exit zoom (hero-split.js) rides on the separate
+   `scale` property; its `transform` is the crop and must stay. */
+.split-hero__photo img { scale: var(--exit-zoom, 1); }
+
+/* Back-to-top sat exactly under the chat button (both fixed in the
+   bottom-right corner), hidden on desktop and peeking out from behind
+   it on phones. It now stacks just above the chat button, centred on
+   it, wherever the chat button is. */
+.back-to-top-wrapper.back-to-top-btn-show { right: 32px; bottom: 94px; }
+@media (max-width: 768px) {
+  .back-to-top-wrapper.back-to-top-btn-show { right: 21px; bottom: 82px; }
+}
+/* in the site's own colours, not the template's lime */
+.back-to-top-btn {
+  background: #121212 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.28), 0 8px 18px rgba(18, 18, 18, 0.22) !important;
+}
+.back-to-top-btn i, .back-to-top-btn svg { color: #ffffff !important; fill: currentColor; }

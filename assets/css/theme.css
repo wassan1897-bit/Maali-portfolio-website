@@ -1,0 +1,172 @@
+/* ================================================================
+   SITE THEME TOKENS
+   Single source of truth for page surfaces and text colour.
+
+   Loaded LAST so it wins over main.css (vendor theme) and
+   new-slider.css without either of those having to be rewritten.
+
+   The page surface is the hero's cream, #F6F0E9. Everything that
+   reads as "the page" uses --bg-primary. Cards and tiles use
+   --bg-surface (a lighter tint of the same hue) so they still lift
+   off the page - flattening them to a single value would erase the
+   card edges entirely, which is not the same thing as a cohesive
+   theme. Deliberate dark elements - the dark hero button, the footer
+   CTA - and the self-contained chat widget are left alone; nothing
+   here repaints them.
+   ================================================================ */
+
+:root {
+  /* ---- Surfaces ---- */
+  --bg-primary: #f6f0e9;        /* every page section - the cream */
+  --bg-primary-rgb: 246, 240, 233;
+  --bg-surface: #fbf8f4;        /* cards, tiles, panels raised off the page */
+  --bg-surface-rgb: 251, 248, 244;
+  --bg-surface-sunken: #f1e9df; /* inset chips, pills, input bars */
+  --bg-inverse: #111111;        /* dark buttons / widget - unchanged */
+
+  /* ---- Lines ---- */
+  --border-subtle: rgba(18, 18, 18, 0.1);
+  --border-strong: rgba(18, 18, 18, 0.22);
+
+  /* ---- Text (contrast measured against --bg-primary) ---- */
+  --text-primary: #121212;      /* 16.6:1  AAA */
+  --text-body: #55504a;         /*  7.1:1  AAA */
+  --text-muted: #6d675f;        /*  4.9:1  AA  */
+  --text-on-inverse: #f6f0e9;
+}
+
+/* ----------------------------------------------------------------
+   1. Page surface
+   ---------------------------------------------------------------- */
+html,
+body {
+  background-color: var(--bg-primary);
+}
+
+/* Sections that previously carried their own off-white, grey-green or
+   white background. (.about-architect manages its own background -
+   see about-architect.css - per its own design brief.) */
+.editorial-hero,
+#projects,
+.feature-three-area,
+.testimonial-three-area,
+.brand-three-area,
+.footer-three-area,
+.white-theme-footer {
+  background-color: var(--bg-primary);
+}
+
+/* The vendor footer paints a dark fill and a white radial wash on top
+   of it; both have to go for the cream to read through. */
+.footer-three-area,
+.white-theme-footer {
+  background-image: none;
+}
+
+/* Vendor section wrappers from main.css that share the theme's old
+   #f4f2ee / #f5f5f5 page tones. Listed so the token still applies if
+   these sections are added to the page later. */
+.about-area,
+.brand-area,
+.portfolio-wrapper,
+.feature-area,
+.testimonial-area,
+.testimonial-two-area,
+.banner-three-area,
+.banner-three-left,
+.banner-three-right,
+.faq-two-wrap,
+.pricing-area,
+.team-area,
+.breadcrumb {
+  background-color: var(--bg-primary);
+}
+
+/* ----------------------------------------------------------------
+   2. Raised surfaces - cards, tiles, panels
+   ---------------------------------------------------------------- */
+#projects .card,
+#projects .project-details-view,
+.premium-card,
+.testimonial-three-wrapper,
+.brand-item.brand-three-item,
+.brand-three-item,
+.portfolio-three-item,
+.white-theme-footer .footer-three-top-info,
+.white-theme-footer .footer-three-social ul li a,
+.footer-three-social ul li a,
+.btn-view-doc,
+.header-three-logo {
+  background-color: var(--bg-surface);
+}
+
+/* Raised surfaces sat on a darker page before, so their edge came for
+   free. On cream they need a hairline to stay legible as cards. */
+#projects .card,
+.premium-card,
+.testimonial-three-wrapper,
+.brand-item.brand-three-item,
+.brand-three-item,
+.white-theme-footer .footer-three-top-info {
+  border: 1px solid var(--border-subtle);
+}
+
+/* ----------------------------------------------------------------
+   3. Sunken surfaces - pills, chips, inset bars
+   ---------------------------------------------------------------- */
+.brand-three-title,
+.pill-input-bar,
+.ai-chat-message.ai-message,
+.portfolio-three-btn {
+  background-color: var(--bg-surface-sunken);
+}
+
+/* ----------------------------------------------------------------
+   4. Text contrast on the new surface
+   Sections that moved from #e3e3db / white to cream keep dark text,
+   so contrast only improves. These pin the values to the tokens so
+   they stay correct if the surface is ever retuned.
+   ---------------------------------------------------------------- */
+#projects,
+.feature-three-area,
+.testimonial-three-area,
+.brand-three-area,
+.white-theme-footer {
+  color: var(--text-body);
+}
+
+#projects .card h3,
+#projects .card h4,
+.testimonial-three-wrapper h4,
+.white-theme-footer h2,
+.white-theme-footer h3,
+.white-theme-footer h4,
+.white-theme-footer h5 {
+  color: var(--text-primary);
+}
+
+/* Anything that was light-on-dark inside the now-cream footer would be
+   invisible; pull it back to the body ink. */
+.white-theme-footer .text-white,
+.white-theme-footer p,
+.white-theme-footer li,
+.white-theme-footer a:not(.bg-main-600):not(.btn) {
+  color: var(--text-body);
+}
+
+.white-theme-footer .text-white:hover,
+.white-theme-footer a:not(.bg-main-600):not(.btn):hover {
+  color: var(--text-primary);
+}
+
+/* ----------------------------------------------------------------
+   5. Accent
+   #14a800 (Upwork green) only reaches 2.8:1 on the cream, so the
+   rating figures failed AA. Darkened to 4.9:1 while staying
+   recognisably the same green.
+   ---------------------------------------------------------------- */
+:root { --accent-green: #0e7a00; }
+
+/* NOTE: the chat widget and the dark hero button style themselves and
+   are deliberately left alone - .ai-chat-toggle and .ai-chat-header are
+   light surfaces, not inverse ones. */

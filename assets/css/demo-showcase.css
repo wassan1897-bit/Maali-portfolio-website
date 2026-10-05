@@ -1,0 +1,547 @@
+/* ================================================================
+   DEMO SHOWCASE - the full-screen view behind each Video Demos row
+   Reference: an approved 1672x941 screenshot. Every size below is a
+   clamp whose vw term lands on the reference value at that viewport,
+   so 1672 reproduces the approved composition exactly and other
+   widths scale from it rather than snapping at breakpoints.
+
+   All selectors are ds-* and live only inside #demos-details, which
+   is a fixed full-screen layer - nothing here can reach the rest of
+   index.html. The explicit margin/line-height resets are deliberate:
+   this page loads the vendor cascade (Bootstrap), whose body
+   line-height 1.6 and paragraph margins would otherwise inflate
+   every block.
+   ================================================================ */
+
+.ds-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-primary, #f6f0e9);
+  color: var(--text-primary, #1f1f1f);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+.ds-page *,
+.ds-page *::before,
+.ds-page *::after { box-sizing: border-box; }
+
+.ds-page p,
+.ds-page h1,
+.ds-page h2 {
+  margin: 0;
+  font-family: inherit;
+}
+
+/* h1/h2 pick up the theme's display face and its caps; the showcase is
+   Inter in sentence case. Scoped to these two so it cannot reach
+   .ds-corner, whose uppercase is intentional. */
+.ds-page .ds-title,
+.ds-page .ds-strip-heading { text-transform: none; }
+
+/* Reference content spans x76 -> x1613 at 1672. */
+.ds-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1672px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4.545vw, 84px);
+}
+
+/* ----------------------------------------------------------------
+   Decorative orbital lines - strokes only, no fills, no gradients.
+   Sized off the viewport so the arcs keep sweeping off both edges
+   the way the reference does instead of shrinking into the layout.
+   ---------------------------------------------------------------- */
+.ds-decor {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ds-decor-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(31, 31, 31, 0.07);
+}
+
+/* Arc crossing beneath the header, centred far below the page. */
+.ds-decor-ring--top {
+  width: 190vw;
+  height: 190vw;
+  left: 50%;
+  top: 10.2vh;
+  transform: translateX(-50%);
+}
+
+/* Mirror arc rising past the tools strip. */
+.ds-decor-ring--bottom {
+  width: 170vw;
+  height: 170vw;
+  left: 50%;
+  bottom: -158vw;
+  transform: translateX(-50%);
+}
+
+.ds-decor-dot {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(31, 31, 31, 0.16);
+}
+
+/* ----------------------------------------------------------------
+   Header - same lockup, nav and CTA as the project detail template
+   ---------------------------------------------------------------- */
+.ds-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(14px, 1.32vw, 24px);
+  padding-bottom: clamp(14px, 1.32vw, 24px);
+}
+
+.ds-brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(9px, 0.78vw, 15px);
+  text-decoration: none;
+  color: var(--text-primary, #1f1f1f);
+  flex: none;
+}
+
+.ds-brand-mark {
+  flex: none;
+  width: clamp(30px, 2.39vw, 44px);
+  height: clamp(22px, 1.79vw, 33px);
+}
+.ds-brand-mark svg { width: 100%; height: 100%; display: block; }
+
+.ds-brand-text {
+  font-size: clamp(8.5px, 0.598vw, 11px);
+  font-weight: 500;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--text-muted, #6d675f);
+}
+
+.ds-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(24px, 3.29vw, 60px);
+}
+
+.ds-nav a {
+  font-size: clamp(13px, 0.897vw, 17px);
+  font-weight: 400;
+  color: var(--text-primary, #1f1f1f);
+  text-decoration: none;
+  opacity: 0.88;
+  transition: opacity 0.2s ease;
+}
+.ds-nav a:hover { opacity: 1; }
+
+/* ----------------------------------------------------------------
+   Buttons
+   ---------------------------------------------------------------- */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.66vw, 13px);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: clamp(13px, 0.897vw, 17px);
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.ds-btn--solid {
+  padding: clamp(13px, 1.02vw, 19px) clamp(18px, 1.55vw, 29px);
+  background: #111111;
+  color: #ffffff;
+}
+.ds-btn--solid:hover { background: #000000; color: #ffffff; }
+
+.ds-btn-arrow {
+  display: inline-flex;
+  width: clamp(15px, 1.08vw, 20px);
+  height: clamp(15px, 1.08vw, 20px);
+  flex: none;
+  transition: transform 0.25s ease;
+}
+.ds-btn-arrow svg { width: 100%; height: 100%; }
+.ds-btn:hover .ds-btn-arrow { transform: translateX(3px); }
+
+/* Back to Demos - warm-grey pill, quieter than the CTA */
+.ds-back-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(12px, 1.38vw, 26px);
+}
+
+.ds-back {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.72vw, 14px);
+  padding: clamp(11px, 0.9vw, 17px) clamp(18px, 1.44vw, 27px);
+  border: none;
+  border-radius: 999px;
+  background: rgba(31, 31, 31, 0.055);
+  color: var(--text-primary, #1f1f1f);
+  font-family: inherit;
+  font-size: clamp(13px, 0.897vw, 17px);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+.ds-back:hover { background: rgba(31, 31, 31, 0.1); }
+.ds-back svg { width: clamp(15px, 1.08vw, 20px); height: clamp(15px, 1.08vw, 20px); flex: none; transition: transform 0.25s ease; }
+.ds-back:hover svg { transform: translateX(-3px); }
+
+/* ----------------------------------------------------------------
+   Corner microcopy
+   ---------------------------------------------------------------- */
+.ds-corner {
+  font-size: clamp(8.5px, 0.628vw, 11.5px);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  line-height: 1.48;
+  text-transform: uppercase;
+  color: rgba(31, 31, 31, 0.34);
+}
+
+.ds-corner::after {
+  content: "";
+  display: block;
+  width: 34px;
+  height: 1px;
+  margin-top: 7px;
+  background: rgba(31, 31, 31, 0.22);
+}
+
+.ds-corner--tr { text-align: right; }
+.ds-corner--tr::after { margin-left: auto; }
+.ds-corner--br { text-align: right; }
+.ds-corner--br::after { margin-left: auto; }
+
+/* ----------------------------------------------------------------
+   Hero - video left, project information right
+   Reference: 899 / 618 columns, 20 gap, both 486 tall.
+   ---------------------------------------------------------------- */
+.ds-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 899fr) minmax(0, 618fr);
+  gap: clamp(14px, 1.196vw, 22px);
+  align-items: stretch;
+  padding-top: clamp(14px, 1.08vw, 20px);
+}
+
+/* Shared surface treatment: warm white over the cream, hairline
+   border, one broad low-opacity shadow. No blur, no gradient. */
+.ds-video-card,
+.ds-info-card,
+.ds-strip {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(31, 31, 31, 0.055);
+  border-radius: clamp(14px, 1.196vw, 22px);
+  box-shadow: 0 18px 46px -26px rgba(120, 100, 70, 0.28);
+}
+
+/* The reference's 899x486 shape is set by a padding ratio on a spacer, not
+   by aspect-ratio. aspect-ratio here was load-bearing in the wrong
+   direction: the grid stretched the card to the taller info card's height,
+   and the ratio then derived the card's WIDTH from that height - 1176px in
+   an 899px column, so the video overlapped the project information. A
+   percentage padding always resolves against the width, so the shape can
+   only ever set the height, and the card is still free to stretch taller
+   when the information side is the taller of the two. */
+.ds-video-card {
+  display: grid;
+  width: 100%;
+  padding: clamp(6px, 0.66vw, 12px);
+}
+
+.ds-video-card::before {
+  content: "";
+  grid-area: 1 / 1;
+  padding-top: 52.8%;   /* the reference card is 899x486 including its padding */
+}
+
+.ds-video {
+  grid-area: 1 / 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: clamp(9px, 0.78vw, 15px);
+  overflow: hidden;
+  background: #0d0d0f;
+}
+
+.ds-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.ds-info-card {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(22px, 2.39vw, 44px) clamp(20px, 2.39vw, 44px);
+}
+
+.ds-meta {
+  display: flex;
+  align-items: center;
+  gap: clamp(9px, 0.9vw, 17px);
+  font-size: clamp(11px, 0.777vw, 14.5px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgba(31, 31, 31, 0.42);
+}
+
+.ds-meta-num { color: var(--text-primary, #1f1f1f); font-weight: 700; }
+.ds-meta-sep { color: rgba(31, 31, 31, 0.28); }
+
+.ds-title {
+  margin-top: clamp(14px, 1.44vw, 27px);
+  font-size: clamp(28px, 3.17vw, 59px);
+  font-weight: 800;
+  line-height: 1.07;
+  letter-spacing: -0.021em;
+  color: var(--text-primary, #1f1f1f);
+}
+
+.ds-desc {
+  margin-top: clamp(14px, 1.61vw, 30px);
+  font-size: clamp(14px, 1.017vw, 19px);
+  font-weight: 400;
+  line-height: 1.65;
+  color: rgba(31, 31, 31, 0.62);
+}
+
+.ds-usepill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: clamp(9px, 0.78vw, 15px);
+  margin-top: clamp(18px, 2.03vw, 38px);
+  padding: clamp(10px, 0.78vw, 15px) clamp(16px, 1.32vw, 25px);
+  border: 1px solid rgba(31, 31, 31, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: clamp(10.5px, 0.748vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-primary, #1f1f1f);
+}
+
+.ds-usepill-icon {
+  display: inline-flex;
+  width: clamp(15px, 1.14vw, 21px);
+  height: clamp(15px, 1.14vw, 21px);
+  flex: none;
+  color: var(--text-primary, #1f1f1f);
+}
+.ds-usepill-icon svg { width: 100%; height: 100%; }
+
+/* ----------------------------------------------------------------
+   Tools & Technologies + Project Link strip
+   ---------------------------------------------------------------- */
+.ds-strip-row { padding-top: clamp(12px, 1.14vw, 21px); }
+
+.ds-strip {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(16px, 1.68vw, 31px);
+  padding: clamp(18px, 1.79vw, 33px) clamp(18px, 1.79vw, 33px);
+}
+
+.ds-strip-heading {
+  font-size: clamp(13px, 0.927vw, 17.5px);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--text-primary, #1f1f1f);
+}
+
+.ds-tools-col { flex: 1 1 auto; min-width: 0; }
+
+.ds-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 0.72vw, 13px);
+  margin-top: clamp(14px, 1.44vw, 27px);
+}
+
+.ds-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.72vw, 13px);
+  padding: clamp(10px, 0.9vw, 17px) clamp(14px, 1.44vw, 27px);
+  border: 1px solid rgba(31, 31, 31, 0.07);
+  border-radius: clamp(11px, 0.897vw, 17px);
+  background: #ffffff;
+  box-shadow: 0 6px 16px -12px rgba(120, 100, 70, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.ds-tool:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -14px rgba(120, 100, 70, 0.45);
+}
+
+.ds-tool img {
+  width: clamp(18px, 1.55vw, 29px);
+  height: clamp(18px, 1.55vw, 29px);
+  object-fit: contain;
+  flex: none;
+}
+
+.ds-tool span {
+  font-size: clamp(12.5px, 0.897vw, 17px);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--text-primary, #1f1f1f);
+}
+
+.ds-strip-divider {
+  width: 1px;
+  align-self: stretch;
+  flex: none;
+  background: rgba(31, 31, 31, 0.1);
+}
+
+.ds-link-col { flex: 0 0 clamp(250px, 23.7vw, 440px); min-width: 0; }
+
+.ds-link {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 0.9vw, 17px);
+  margin-top: clamp(14px, 1.44vw, 27px);
+  padding: clamp(10px, 0.837vw, 16px) clamp(14px, 1.08vw, 20px);
+  border: 1px solid rgba(31, 31, 31, 0.07);
+  border-radius: clamp(10px, 0.837vw, 16px);
+  background: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 6px 16px -12px rgba(120, 100, 70, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.ds-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -14px rgba(120, 100, 70, 0.45);
+}
+
+.ds-link-icon,
+.ds-link-out {
+  display: inline-flex;
+  width: clamp(16px, 1.26vw, 23px);
+  height: clamp(16px, 1.26vw, 23px);
+  flex: none;
+  color: rgba(31, 31, 31, 0.55);
+}
+.ds-link-icon svg,
+.ds-link-out svg { width: 100%; height: 100%; }
+.ds-link-out { margin-left: auto; color: var(--text-primary, #1f1f1f); }
+
+.ds-link-url {
+  font-size: clamp(11.5px, 0.807vw, 15px);
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(31, 31, 31, 0.62);
+  word-break: break-all;
+}
+
+/* ----------------------------------------------------------------
+   Footer microcopy row - anchored to the bottom of the composition
+   ---------------------------------------------------------------- */
+.ds-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: auto;
+  padding-top: clamp(14px, 1.02vw, 19px);
+  padding-bottom: clamp(12px, 0.66vw, 13px);
+}
+
+/* The site's floating chat widget paints above this layer and lands on the
+   bottom-right microcopy, which the approved reference leaves clear. It is
+   hidden only while the showcase is open and restored on close. */
+body.ds-open .ai-chat-widget { display: none; }
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  .ds-nav { display: none; }
+}
+
+@media (max-width: 1000px) {
+  /* Stack order: back · details · video · tools · link */
+  .ds-hero { grid-template-columns: 1fr; }
+  .ds-info-card { order: 1; }
+  .ds-video-card { order: 2; }
+
+  .ds-strip { flex-wrap: wrap; }
+  .ds-strip-divider { display: none; }
+  .ds-link-col { flex: 1 1 100%; }
+}
+
+@media (max-width: 760px) {
+  .ds-container { padding: 0 22px; }
+  .ds-decor { display: none; }
+  .ds-back-row { flex-direction: column; }
+  .ds-corner--tr { text-align: left; }
+  .ds-corner--tr::after { margin-left: 0; }
+
+  .ds-title { font-size: clamp(26px, 7.4vw, 34px); }
+  .ds-desc { font-size: 15px; }
+  .ds-meta { font-size: 11px; }
+  .ds-strip-heading { font-size: 15px; }
+  .ds-tool span { font-size: 14px; }
+  .ds-tool img { width: 20px; height: 20px; }
+  .ds-usepill { font-size: 11.5px; }
+  .ds-link-url { font-size: 13px; }
+  .ds-corner { font-size: 9.5px; }
+
+  .ds-tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds-tool { justify-content: flex-start; }
+  .ds-tool span { white-space: normal; }
+
+  .ds-foot { flex-direction: column; align-items: flex-start; gap: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ds-btn,
+  .ds-back,
+  .ds-tool,
+  .ds-link,
+  .ds-btn-arrow,
+  .ds-back svg {
+    transition: none !important;
+  }
+  .ds-tool:hover,
+  .ds-link:hover { transform: none; }
+}

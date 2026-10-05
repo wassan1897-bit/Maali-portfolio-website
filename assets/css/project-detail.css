@@ -1,0 +1,1097 @@
+/* ================================================================
+   PROJECT DETAIL - case-study page template
+   Deliberately its own lean stylesheet rather than the vendor cascade
+   the single-page site loads (bootstrap/aos/swiper/etc.) - this page
+   has no slider, no magnific-popup, no circular gallery, and pulling
+   that stack in risks the exact class of bug hit earlier this session
+   (Bootstrap's body line-height inflating a heading block). Only
+   theme.css (shared color tokens) loads alongside this file.
+
+   Visual reference: an approved 1672x941 screenshot of this page's
+   hero + metrics + cards + testimonial. It is a normal scrolling page
+   (not a viewport-locked stage like the portfolio carousel), so
+   proportions are matched with clamp()-based responsive sizing rather
+   than pixel-locked to that one screenshot.
+   ================================================================ */
+
+:root {
+  --pd-ink: var(--text-primary, #121212);
+  --pd-body: var(--text-body, #55504a);
+  --pd-muted: var(--text-muted, #6d675f);
+  --pd-bg: var(--bg-primary, #f6f0e9);
+  --pd-surface: var(--bg-surface, #fbf8f4);
+  --pd-surface-sunken: var(--bg-surface-sunken, #f1e9df);
+  --pd-inverse: var(--bg-inverse, #111111);
+  --pd-border: var(--border-subtle, rgba(18, 18, 18, 0.1));
+  --pd-border-strong: rgba(18, 18, 18, 0.2);
+  --pd-shadow: rgba(120, 100, 70, 0.1);
+  --pd-star: #e0a634;
+}
+
+html, body { margin: 0; padding: 0; }
+
+.pd-page {
+  background: var(--pd-bg);
+  color: var(--pd-body);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.pd-page * { box-sizing: border-box; }
+
+/* The reference's content spans x121-1551 at a 1672 viewport: a 7.24vw side
+   margin and a 1430px content column. max-width caps the column on very wide
+   screens rather than letting the line lengths keep growing. */
+.pd-container {
+  width: 100%;
+  max-width: 1672px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 7.24vw, 132px);
+}
+
+/* ----------------------------------------------------------------
+   Header
+   ---------------------------------------------------------------- */
+.pd-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(246, 240, 233, 0.86);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pd-border);
+}
+
+.pd-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: clamp(11px, 0.9vw, 17px);
+  padding-bottom: clamp(11px, 0.9vw, 17px);
+}
+
+.pd-brand {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 0.6vw, 11px);
+  text-decoration: none;
+  color: var(--pd-ink);
+  flex: none;
+}
+
+.pd-brand-mark {
+  flex: none;
+  width: clamp(28px, 1.95vw, 35px);   /* ref lockup ink is 32px tall overall */
+  height: clamp(21px, 1.44vw, 26px);
+}
+.pd-brand-mark svg { width: 100%; height: 100%; display: block; }
+
+.pd-brand-divider {
+  width: 1px;
+  height: clamp(24px, 1.79vw, 32px);
+  background: var(--pd-border-strong);
+  opacity: 0.6;
+}
+
+.pd-brand-text {
+  font-size: clamp(8.5px, 0.53vw, 9.5px);
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  line-height: 1.42;
+  color: var(--pd-muted);
+}
+
+.pd-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(22px, 2.6vw, 40px);
+}
+
+.pd-nav a {
+  font-size: clamp(13px, 0.807vw, 15px);
+  font-weight: 500;
+  color: var(--pd-ink);
+  text-decoration: none;
+  opacity: 0.82;
+  transition: opacity 0.2s ease;
+}
+
+.pd-nav a:hover { opacity: 1; }
+
+.pd-header-cta { flex: none; }
+
+@media (max-width: 860px) {
+  .pd-nav { display: none; }
+}
+
+/* ----------------------------------------------------------------
+   Shared buttons
+   ---------------------------------------------------------------- */
+.pd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(7px, 0.48vw, 9px);
+  padding: clamp(8px, 0.57vw, 11px) clamp(14px, 1.08vw, 20px);
+  border-radius: 40px;
+  font-size: clamp(12.5px, 0.778vw, 14.5px);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+}
+
+.pd-btn--solid {
+  background: var(--pd-inverse);
+  color: #fff;
+}
+.pd-btn--solid:hover { transform: translateY(-1px); }
+
+.pd-btn--outline {
+  background: transparent;
+  color: var(--pd-ink);
+  border-color: var(--pd-border-strong);
+}
+.pd-btn--outline:hover { background: #fff; }
+
+.pd-btn-icon {
+  display: inline-flex;
+  width: clamp(13px, 0.9vw, 17px);
+  height: clamp(13px, 0.9vw, 17px);
+  flex: none;
+}
+.pd-btn-icon svg { width: 100%; height: 100%; }
+
+.pd-btn-icon--arrow { transition: transform 0.22s ease; }
+.pd-btn:hover .pd-btn-icon--arrow { transform: translateX(3px); }
+
+/* ----------------------------------------------------------------
+   Back-to-portfolio row
+   ---------------------------------------------------------------- */
+/* padding-top only: a `padding: X 0 0` shorthand here also zeroed the
+   .pd-container horizontal padding this element carries. */
+.pd-back-row { padding-top: clamp(10px, 0.72vw, 14px); }
+
+.pd-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(7px, 0.48vw, 9px);
+  font-size: clamp(13px, 0.807vw, 15px);
+  font-weight: 500;
+  color: var(--pd-ink);
+  text-decoration: none;
+  opacity: 0.82;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.pd-back-link:hover { opacity: 1; transform: translateX(-2px); }
+.pd-back-link svg { width: clamp(13px, 0.93vw, 17px); height: clamp(13px, 0.93vw, 17px); }
+
+/* ----------------------------------------------------------------
+   Hero - two column
+   ---------------------------------------------------------------- */
+/* Reference hero: back ink y77 -> visual frame bottom y577, with the left
+   column 414 wide and the visual frame 993, separated by a 23 gap. */
+.pd-hero {
+  padding: clamp(14px, 1.02vw, 19px) 0 clamp(10px, 0.78vw, 15px);
+}
+
+.pd-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 430fr) minmax(0, 977fr);
+  gap: clamp(16px, 1.375vw, 26px);
+  align-items: start;
+}
+
+.pd-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(3px, 0.26vw, 5px);
+  margin: 0 0 clamp(15px, 1.38vw, 25px);   /* ref: crumb ink 125 -> H1 ink 158 */
+  font-size: clamp(10px, 0.62vw, 11.5px); /* ref cap height 7 */
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--pd-muted);
+}
+
+.pd-crumb--num { color: var(--pd-ink); }
+.pd-crumb-sep { opacity: 0.4; }
+
+.pd-title {
+  margin: 0 0 clamp(11px, 0.9vw, 17px);   /* ref: H1 ink 251 -> desc ink 276 */
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  /* Ref line 1 "Multi-Store" is 303 wide at a 42 cap, line 2 397 at 43 -
+     matching the cap alone renders ~5% narrow, so tracking is near-neutral
+     rather than the tight -0.025em first used here. */
+  letter-spacing: -0.012em;
+  line-height: 0.91;                       /* ref line pitch 50 at ~55px */
+  color: var(--pd-ink);
+  font-size: clamp(30px, 3.29vw, 58px);
+}
+
+/* Opt-in via titleSize: "compact" in the data file, for titles too long to
+   hold their line breaks at the reference size (the RAG project's
+   "& Data Ingestion" ran ~1% wider than the column and wrapped again). */
+.pd-title.pd-title--compact {
+  font-size: clamp(27px, 2.9vw, 51px);
+}
+
+.pd-description {
+  margin: 0 0 clamp(13px, 1.02vw, 19px);   /* ref: desc ink 369 -> buttons 396 */
+  max-width: clamp(320px, 26.4vw, 480px);  /* ref widest desc line 414 */
+  font-size: clamp(13.5px, 0.855vw, 15.5px);
+  line-height: 1.45;                       /* ref line pitch 20.75 */
+  color: var(--pd-body);
+}
+
+.pd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 0.66vw, 12px);
+  margin-bottom: clamp(22px, 1.86vw, 34px);  /* ref: buttons 433 -> meta 469 */
+}
+
+.pd-meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(8px, 0.84vw, 15px);
+  margin-bottom: clamp(9px, 0.72vw, 14px);  /* ref: meta 487 -> note 507 */
+}
+
+.pd-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(4px, 0.36vw, 7px);
+  font-size: clamp(12px, 0.75vw, 13.5px);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--pd-body);
+}
+
+.pd-meta-tag-icon {
+  display: inline-flex;
+  width: clamp(13px, 1.08vw, 19px);
+  height: clamp(13px, 1.08vw, 19px);
+  color: var(--pd-ink);
+  opacity: 0.75;
+  flex: none;
+}
+.pd-meta-tag-icon svg { width: 100%; height: 100%; }
+
+.pd-annotation-row {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: clamp(0px, 4vw, 40px);
+}
+
+.pd-annotation {
+  font-family: "Caveat", cursive;
+  font-weight: 600;
+  font-size: clamp(18px, 1.64vw, 30px);
+  line-height: 1.3;
+  color: var(--pd-ink);
+  text-align: right;
+  transform: rotate(-2deg);
+  position: relative;
+}
+
+.pd-annotation-arrow {
+  display: block;
+  margin: 4px 0 0 auto;
+  width: 46px;
+  height: 22px;
+  color: var(--pd-ink);
+  opacity: 0.75;
+}
+.pd-annotation-arrow svg { width: 100%; height: 100%; }
+
+/* ----------------------------------------------------------------
+   Hero visual: architecture on top, dashboard + decisions beneath
+   ---------------------------------------------------------------- */
+/* The frame has a fixed aspect in the reference (993 x 520 => 1.91), which is
+   what letterboxes the architecture diagram and clips the two dark panels at
+   the bottom edge. Letting the frame grow to the images' natural height - the
+   first build here - made the hero roughly twice as tall as the reference. */
+.pd-visual-frame {
+  position: relative;
+  aspect-ratio: 993 / 590;
+  background: var(--pd-surface);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: clamp(12px, 1.02vw, 20px);
+  padding: clamp(6px, 0.78vw, 14px);
+  box-shadow: 0 30px 70px -30px var(--pd-shadow), 0 6px 18px rgba(120, 100, 70, 0.06);
+  overflow: hidden;
+}
+
+/* JS renders three <img> as direct children (architecture, dashboard,
+   decisions) - the grid places the wide one on its own row and lets the
+   other two share the row beneath, with no extra wrapper markup needed. */
+[data-pd-visual] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* ref: architecture band ~282, dark panels ~217 */
+  grid-template-rows: 350fr 217fr;
+  grid-template-areas: "wide wide" "a b";
+  gap: clamp(5px, 0.6vw, 10px);
+  height: 100%;
+}
+
+/* project-detail.js adds this when a project supplies only the wide
+   screenshot - the two-panel row never existed to reserve space for,
+   so the single image fills the whole frame instead of sitting in a
+   350fr band above an empty 217fr gap. */
+[data-pd-visual].pd-visual--solo {
+  grid-template-rows: 1fr;
+  grid-template-areas: "wide wide";
+}
+
+.pd-visual--solo .pd-visual-img--wide {
+  object-fit: contain;
+}
+
+.pd-visual-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: clamp(6px, 0.6vw, 11px);
+}
+
+/* Contained and centred, so the whole diagram stays readable - the reference
+   letterboxes it to ~541 of the frame's 980 inner width rather than cropping. */
+.pd-visual-img--wide {
+  grid-area: wide;
+  object-fit: contain;
+  object-position: center center;
+}
+
+/* The panels fill their cells and clip, flush to the frame's inner edge. */
+.pd-visual-img--a { grid-area: a; object-fit: cover; object-position: left top; }
+.pd-visual-img--b { grid-area: b; object-fit: cover; object-position: left top; }
+
+/* ----------------------------------------------------------------
+   Metrics + tech stack strip
+   ---------------------------------------------------------------- */
+.pd-strip {
+  padding: 0 0 clamp(5px, 0.45vw, 9px);
+}
+
+.pd-strip-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(18px, 1.8vw, 34px);
+  background: var(--pd-surface);
+  border: 1px solid var(--pd-border);
+  border-radius: clamp(12px, 1.02vw, 20px);
+  padding: clamp(13px, 1.02vw, 20px) clamp(14px, 1.14vw, 22px);
+  box-shadow: 0 18px 44px -26px var(--pd-shadow);
+}
+
+.pd-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: clamp(16px, 1.8vw, 34px);
+  flex: 1 1 auto;
+}
+
+.pd-metric { display: flex; flex-direction: column; min-width: 118px; }
+
+.pd-metric-value {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  font-size: clamp(21px, 1.72vw, 32px);   /* ref value band is 23 tall */
+  line-height: 1;
+  color: var(--pd-ink);
+}
+
+.pd-metric-label {
+  margin-top: clamp(3px, 0.3vw, 6px);
+  font-size: clamp(11.5px, 0.718vw, 13px);
+  font-weight: 500;
+  color: var(--pd-body);
+}
+
+.pd-metric-note {
+  margin-top: 1px;
+  font-size: clamp(10px, 0.628vw, 11.5px);
+  color: var(--pd-muted);
+}
+
+.pd-strip-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--pd-border-strong);
+  opacity: 0.5;
+  flex: none;
+}
+
+.pd-tech {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6px, 0.54vw, 10px);
+  flex: none;
+}
+
+.pd-tech-label {
+  font-size: clamp(9px, 0.568vw, 10.5px);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pd-muted);
+}
+
+.pd-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(5px, 0.45vw, 9px);
+}
+
+.pd-tool-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(4px, 0.36vw, 7px);
+  padding: clamp(4px, 0.36vw, 7px) clamp(8px, 0.72vw, 14px);
+  border: 1px solid var(--pd-border);
+  border-radius: 30px;
+  background: #fff;
+  font-size: clamp(10.5px, 0.658vw, 12.5px);
+  font-weight: 500;
+  color: rgba(21, 21, 21, 0.75);
+  white-space: nowrap;
+}
+
+.pd-tool-icon { width: clamp(10px, 0.72vw, 14px); height: clamp(10px, 0.72vw, 14px); object-fit: contain; flex: none; }
+
+@media (max-width: 900px) {
+  .pd-strip-divider { display: none; }
+}
+
+/* ----------------------------------------------------------------
+   Content cards
+   ---------------------------------------------------------------- */
+.pd-cards-section { padding: 0 0 clamp(5px, 0.45vw, 9px); }
+
+.pd-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(10px, 1.08vw, 20px);   /* ref card content columns 62 apart */
+}
+
+.pd-card {
+  background: var(--pd-surface);
+  border: 1px solid var(--pd-border);
+  border-radius: clamp(10px, 0.9vw, 18px);
+  padding: clamp(13px, 1.02vw, 20px);
+}
+
+/* The reference puts the dot and the title on one row (title ink starts 35px
+   right of the card's body text), not stacked. */
+.pd-card-head {
+  display: flex;
+  align-items: center;
+  gap: clamp(7px, 0.54vw, 10px);
+  margin-bottom: clamp(8px, 0.66vw, 13px);
+}
+
+.pd-card-dot {
+  display: block;
+  flex: none;
+  width: clamp(14px, 1.14vw, 22px);
+  height: clamp(14px, 1.14vw, 22px);
+  border-radius: 50%;
+  background: var(--pd-surface-sunken);
+}
+
+.pd-card-title {
+  margin: 0;
+  font-size: clamp(12.5px, 0.79vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pd-ink);
+}
+
+.pd-card-body {
+  margin: 0;
+  font-size: clamp(11.5px, 0.718vw, 13px);
+  line-height: 1.55;
+  color: var(--pd-body);
+}
+
+.pd-card-eyebrow { color: var(--pd-ink); font-weight: 600; }
+
+.pd-card-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4px, 0.33vw, 7px);
+}
+
+.pd-card-list li {
+  position: relative;
+  padding-left: clamp(10px, 0.78vw, 15px);
+  font-size: clamp(11px, 0.7vw, 12.5px);
+  line-height: 1.45;
+  color: var(--pd-body);
+}
+
+.pd-card-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--pd-ink);
+  opacity: 0.5;
+}
+
+@media (max-width: 1100px) {
+  .pd-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .pd-cards { grid-template-columns: 1fr; }
+}
+
+/* ----------------------------------------------------------------
+   Testimonial
+   ---------------------------------------------------------------- */
+.pd-review-section { padding: 0 0 clamp(5px, 0.45vw, 9px); }
+
+.pd-review-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(14px, 1.44vw, 28px);
+  background: var(--pd-surface);
+  border: 1px solid var(--pd-border);
+  border-radius: clamp(12px, 1.02vw, 20px);
+  padding: clamp(13px, 1.02vw, 20px) clamp(14px, 1.14vw, 22px);
+}
+
+.pd-review-icon {
+  flex: none;
+  width: clamp(20px, 1.74vw, 33px);
+  height: clamp(15px, 1.32vw, 25px);
+  color: rgba(21, 21, 21, 0.22);
+}
+.pd-review-icon svg { width: 100%; height: 100%; }
+
+.pd-review-body { flex: 1 1 380px; min-width: 0; }
+
+.pd-review-quote {
+  margin: 0;
+  font-size: clamp(12.5px, 0.79vw, 14.5px);
+  line-height: 1.5;
+  color: var(--pd-ink);
+}
+
+.pd-review-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(5px, 0.48vw, 9px) clamp(12px, 1.2vw, 22px);
+  margin: clamp(7px, 0.6vw, 12px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pd-review-highlights li {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(4px, 0.36vw, 7px);
+  font-size: clamp(11px, 0.688vw, 12.5px);
+  font-weight: 500;
+  color: var(--pd-body);
+}
+
+.pd-highlight-icon {
+  display: inline-flex;
+  width: clamp(11px, 0.84vw, 15px);
+  height: clamp(11px, 0.84vw, 15px);
+  color: var(--pd-ink);
+  opacity: 0.6;
+  flex: none;
+}
+.pd-highlight-icon svg { width: 100%; height: 100%; }
+
+.pd-review-meta {
+  flex: none;
+  text-align: right;
+  margin-left: auto;
+}
+
+.pd-review-stars {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-bottom: clamp(4px, 0.36vw, 7px);
+}
+
+.pd-star { width: clamp(10px, 0.78vw, 14px); height: clamp(10px, 0.78vw, 14px); color: var(--pd-border-strong); }
+.pd-star.is-filled { color: var(--pd-star); }
+.pd-star svg { width: 100%; height: 100%; }
+
+.pd-review-identity {
+  font-size: clamp(11px, 0.688vw, 12.5px);
+  font-weight: 500;
+  color: var(--pd-muted);
+  max-width: clamp(180px, 22vw, 380px);
+}
+
+@media (max-width: 700px) {
+  .pd-review-meta { margin-left: 0; text-align: left; }
+  .pd-review-stars { justify-content: flex-start; }
+}
+
+/* ----------------------------------------------------------------
+   Bottom CTA
+   ---------------------------------------------------------------- */
+.pd-cta-section { padding: 0 0 clamp(36px, 3.6vw, 68px); }
+
+.pd-cta-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(16px, 1.8vw, 34px);
+  background: var(--pd-surface);
+  border: 1px solid var(--pd-border);
+  border-radius: clamp(12px, 1.02vw, 20px);
+  padding: clamp(16px, 1.44vw, 28px) clamp(16px, 1.44vw, 28px);
+}
+
+.pd-cta-main { flex: 1 1 340px; min-width: 0; }
+
+.pd-cta-label {
+  margin: 0 0 clamp(5px, 0.42vw, 9px);
+  font-size: clamp(9.5px, 0.598vw, 11px);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pd-muted);
+}
+
+.pd-cta-heading {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: clamp(19px, 1.44vw, 27px);
+  line-height: 1.15;
+  color: var(--pd-ink);
+}
+
+.pd-cta-supporting {
+  flex: 1 1 240px;
+  margin: 0;
+  font-size: clamp(12.5px, 0.79vw, 14px);
+  line-height: 1.5;
+  color: var(--pd-body);
+}
+
+.pd-cta-decorative {
+  flex: none;
+  font-size: clamp(7.5px, 0.568vw, 10.5px);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.85;
+  color: var(--pd-muted);
+  text-align: right;
+}
+
+.pd-cta-button { flex: none; }
+
+@media (max-width: 900px) {
+  .pd-cta-decorative { display: none; }
+}
+
+/* ----------------------------------------------------------------
+   Motion - subtle only, and only once data has rendered
+   ---------------------------------------------------------------- */
+html:not(.pd-ready) .pd-card,
+html:not(.pd-ready) [data-pd-visual],
+html:not(.pd-ready) .pd-title,
+html:not(.pd-ready) .pd-description {
+  opacity: 0;
+}
+
+.pd-card,
+[data-pd-visual],
+.pd-title,
+.pd-description {
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+html.pd-ready .pd-title,
+html.pd-ready .pd-description,
+html.pd-ready [data-pd-visual] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-card, [data-pd-visual], .pd-title, .pd-description {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Responsive - hero stack
+   ---------------------------------------------------------------- */
+@media (max-width: 1000px) {
+  .pd-hero-grid { grid-template-columns: 1fr; }
+  .pd-annotation-row { justify-content: flex-start; padding-right: 0; margin-top: 8px; }
+  .pd-annotation { text-align: left; }
+  .pd-annotation-arrow { margin: 4px auto 0 0; }
+}
+
+@media (max-width: 640px) {
+  /* On a phone the frame is only ~350 wide, so the reference's 993x590 aspect
+     leaves the architecture row about 120px tall - and the two dark panels,
+     sized off vw, overflowed it and pushed the diagram out of the clipped
+     frame entirely. Below 640 the three images stack at their natural height
+     instead and the frame grows with them. */
+  .pd-visual-frame { aspect-ratio: auto; }
+  [data-pd-visual] {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas: "wide" "a" "b";
+    height: auto;
+  }
+  .pd-visual-img { height: auto; }
+  .pd-visual-img--a, .pd-visual-img--b { object-fit: contain; }
+  .pd-strip-card { flex-direction: column; align-items: flex-start; }
+  /* space-between across a wrapping flex row left the four metrics on an
+     uneven 1/2/1 stack at 390; a 2x2 grid reads as one block. */
+  .pd-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 16px;
+    width: 100%;
+  }
+  .pd-metric { min-width: 0; }
+  .pd-cta-decorative { display: none; }
+}
+
+/* ----------------------------------------------------------------
+   Phone / small-tablet legibility
+   Everything above is vw-derived to match the 1672 reference, so below
+   ~900px every one of those clamps collapses to its floor - which left
+   body copy at 9.5px and pills at 9px on a phone. These explicit sizes
+   take over only in that range; the width query plus source order means
+   the desktop reference match is untouched.
+   ---------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .pd-brand-text { font-size: 10px; }
+  .pd-btn { font-size: 14px; padding: 10px 18px; }
+  .pd-back-link { font-size: 14px; }
+
+  .pd-breadcrumb { font-size: 11.5px; }
+  .pd-description { font-size: 15px; max-width: none; }
+  .pd-meta-tag { font-size: 13px; }
+
+  .pd-metric-value { font-size: 28px; }
+  .pd-metric-label { font-size: 13px; }
+  .pd-metric-note { font-size: 11.5px; }
+  .pd-tech-label { font-size: 11px; }
+  .pd-tool-pill { font-size: 12.5px; padding: 6px 12px; }
+  .pd-tool-icon { width: 14px; height: 14px; }
+
+  .pd-card-title { font-size: 13px; }
+  .pd-card-body { font-size: 14px; }
+  .pd-card-list li { font-size: 13.5px; padding-left: 14px; }
+
+  .pd-review-quote { font-size: 14.5px; }
+  .pd-review-highlights li { font-size: 13px; }
+  /* flex:none sized this column to the identity line's max-content (412px at
+     13px), pushing the page 65px wider than a 390 phone - it has to be
+     allowed to take a full row and wrap instead. */
+  .pd-review-meta { flex: 1 1 100%; min-width: 0; }
+  .pd-review-identity { font-size: 13px; max-width: none; }
+
+  .pd-cta-label { font-size: 11px; }
+  .pd-cta-heading { font-size: 22px; }
+  .pd-cta-supporting { font-size: 14.5px; }
+}
+
+/* ================================================================
+   CINEMATIC ARRIVAL
+   ================================================================
+   Driven by assets/js/project-detail-arrival.js. The html element
+   gets .pd-cinematic only once that script is running, so with JS
+   off, GSAP missing, or reduced motion, none of the hidden states
+   below ever apply and the page renders exactly as authored.
+   ================================================================ */
+
+/* The title's lines were joined by <br /> before; they are now each
+   wrapped so they can slide out from behind a mask. These two rules
+   reproduce the old line behaviour on their own. */
+.pd-title-line {
+  display: block;
+  overflow: hidden;
+}
+
+.pd-title-line-inner {
+  display: block;
+}
+
+/* The earlier .pd-ready fade and the arrival sequence would otherwise
+   animate the same four things at once. When the cinematic script is
+   live it takes ownership outright. */
+html.pd-cinematic .pd-card,
+html.pd-cinematic [data-pd-visual],
+html.pd-cinematic .pd-title,
+html.pd-cinematic .pd-description {
+  opacity: 1;
+  transition: none;
+}
+
+html.pd-cinematic:not(.pd-ready) .pd-card,
+html.pd-cinematic:not(.pd-ready) [data-pd-visual],
+html.pd-cinematic:not(.pd-ready) .pd-title,
+html.pd-cinematic:not(.pd-ready) .pd-description {
+  opacity: 1;
+}
+
+/* Perspective lives on the frame's parent so the visual panel can drop
+   in with real depth rather than a flat skew. */
+html.pd-cinematic .pd-hero-right {
+  perspective: 1200px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-title-line,
+  .pd-title-line-inner {
+    overflow: visible;
+    transform: none !important;
+  }
+}
+
+
+/* ================================================================
+   VIDEO PROJECTS
+   The hero frame holds a Loom walkthrough instead of screenshots:
+   first frame + play button until clicked, then the player itself.
+   16:9 inside the frame's 993:590 box, so it sits centred with a
+   thin band above and below rather than being cropped.
+   ================================================================ */
+[data-pd-visual].pd-visual--video {
+  align-items: center;
+}
+
+.pd-video {
+  grid-area: wide;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  align-self: center;
+  border-radius: clamp(6px, 0.6vw, 11px);
+  overflow: hidden;
+  background: #111;
+}
+
+.pd-video-thumb,
+.pd-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  object-fit: cover;
+}
+
+.pd-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.18), rgba(0,0,0,0) 38%),
+    linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,0.28));
+}
+.pd-video.is-playing::after { display: none; }
+
+.pd-video-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: clamp(56px, 5vw, 80px);
+  height: clamp(56px, 5vw, 80px);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111111;
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.45), 0 0 0 7px rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), background-color 260ms ease;
+}
+.pd-video-play-icon { display: block; width: 38%; height: 38%; margin-left: 7%; }
+.pd-video-play-icon svg { width: 100%; height: 100%; display: block; }
+.pd-video-play:hover { transform: translate(-50%, -50%) scale(1.07); background: #ffffff; }
+.pd-video-play:active { transform: translate(-50%, -50%) scale(0.97); }
+.pd-video-play:focus-visible { outline: 2px solid #ffffff; outline-offset: 4px; }
+
+.pd-video-duration {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 2;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pd-video-play { transition: none; }
+  .pd-video-play:hover,
+  .pd-video-play:active { transform: translate(-50%, -50%); }
+}
+
+
+/* ----------------------------------------------------------------
+   Looping screenshot slider (project-detail.js initSlider), used
+   when a project supplies visual.slides. The slides sit in a viewport
+   that leaves a strip beneath for the position markers, so the
+   markers never cover a screenshot's text.
+   ---------------------------------------------------------------- */
+/* Slider fills the frame edge-to-edge; slides are remastered to 16:9
+   with full content visible (no crop of UI or diagram). */
+[data-pd-visual].pd-visual--slider {
+  display: block;
+  height: 100%;
+}
+
+.pd-visual-frame:has(.pd-visual--slider) {
+  aspect-ratio: 4 / 3;
+}
+
+.pd-visual-frame:has(.pd-visual--slider-wide) {
+  aspect-ratio: 21 / 9;
+}
+
+.pd-slider {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.pd-slider-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  border-radius: clamp(6px, 0.6vw, 11px);
+  isolation: isolate;
+}
+
+.pd-slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform var(--pd-slide-ms, 1100ms) cubic-bezier(0.65, 0, 0.25, 1);
+  will-change: transform;
+}
+.pd-slider-track.is-instant { transition: none; }
+
+.pd-slide {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--pd-surface, #f7f4ee);
+}
+
+.pd-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.pd-slider-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(8px, 0.8vw, 14px);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  height: clamp(16px, 1.4vw, 22px);
+  pointer-events: none;
+}
+
+.pd-slider-dot {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  width: 28px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.pd-slider-dot i {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(21, 21, 21, 0.22);
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
+.pd-slider-dot i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--pd-ink, #151515);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.pd-slider-dot.is-on i::after { transform: scaleX(1); }
+.pd-slider.is-ticking .pd-slider-dot.is-on i::after { animation: pd-slide-tick var(--pd-slide-every, 4200ms) linear both; }
+.pd-slider.is-paused .pd-slider-dot.is-on i::after { animation-play-state: paused; }
+.pd-slider-dot:focus-visible { outline: 2px solid var(--pd-ink, #151515); outline-offset: 2px; border-radius: 3px; }
+
+@keyframes pd-slide-tick {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Phones: keep a landscape frame so both remastered slides fill cleanly. */
+@media (max-width: 640px) {
+  [data-pd-visual].pd-visual--slider { height: auto; }
+  .pd-slider { height: auto; }
+  .pd-slider-viewport { flex: none; aspect-ratio: 4 / 3; height: auto; }
+  .pd-visual--slider-wide .pd-slider-viewport { aspect-ratio: 21 / 9; }
+}

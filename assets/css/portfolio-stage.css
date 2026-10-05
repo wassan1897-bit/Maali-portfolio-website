@@ -1,0 +1,1712 @@
+/* ================================================================
+   PORTFOLIO STAGE - "Featured Projects"
+
+   Geometry is matched to the approved 1672x941 reference composition.
+   Every number below is derived from a measurement of that reference,
+   expressed as a ratio so the composition scales rather than being
+   pinned to one screenshot size. Reference values in comments are the
+   pixel figures measured at 1672x941.
+
+   This is a viewport-height stage (the reference pins branding to the
+   top edge and decorative copy to the bottom edge), so the vertical
+   rhythm is driven by a centred flex column rather than fixed padding.
+   ================================================================ */
+
+:root {
+  --portfolio-card-bg: #fdfcfa;
+  --portfolio-ink: #151515;
+  --portfolio-body: rgba(21, 21, 21, 0.62);
+  --portfolio-border: rgba(21, 21, 21, 0.08);
+  --portfolio-border-strong: rgba(21, 21, 21, 0.2);
+  --portfolio-arc: rgba(120, 110, 95, 0.1);
+  --portfolio-shadow: rgba(120, 100, 70, 0.1);
+  --portfolio-muted: #6d675f;
+}
+
+.portfolio-stage {
+  /* ---- Geometry, all ratios of the measured reference ---- */
+  /* active card 975 x 534 at 1672x941 -> 58.3vw / 56.7vh */
+  /* Width wants 58.3vw (the reference's 975 at 1672), but it is also bounded
+     by height: the reference card is 56.6% of its viewport height, and on a
+     wider-aspect window (e.g. 1914x991) an unbounded 58.3vw card grows to 60%
+     of the viewport height and squeezes the header - that is what reads as the
+     composition "sitting too high", with the eyebrow pushed to y=56 instead of
+     the reference's proportional y=78. Capping the height at 59vh keeps the
+     reference's top and bottom breathing room on short windows; on a normal
+     16:9 desktop the vw term still wins and the card reaches 1110x607.
+     Breakpoints below override --card-w-ideal, not --card-w, so the height
+     bound keeps applying. */
+  --card-w-ideal: clamp(820px, 58.3vw, 1110px);
+  --card-w: min(var(--card-w-ideal), calc(59vh * 1.83));
+  --card-h: calc(var(--card-w) / 1.83);
+
+  /* Rear cards are their own portrait format (174 x 456 measured), not a
+     scaled copy of the landscape active card. They sit fully beside the
+     active card rather than running under it - at 300 wide their titles
+     wrapped mid-word behind the active card's edge. */
+  --rear-w: calc(var(--card-w) * 0.205);
+  --rear-h: calc(var(--card-h) * 0.854);
+
+  /* centre offset per depth, as a fraction of --card-w */
+  --d1: 0.576;
+  --d2: 0.728;
+  --s1: 1;
+  --s2: 0.715;
+
+  --arrow-size: clamp(44px, 3.11vw, 56px); /* 52 measured */
+
+  /* outermost visual edge of the fan, from stage centre */
+  --stack-reach: calc(var(--card-w) * var(--d2) + var(--rear-w) * var(--s2) / 2);
+
+  position: relative;
+  background-color: var(--bg-primary, #f6f0e9);
+  color: var(--portfolio-body);
+  overflow: hidden;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ----------------------------------------------------------------
+   Decorative arc + sparkles
+   A very large circle whose top sliver reads as a faint orbital line
+   behind the header. Low contrast on purpose.
+   ---------------------------------------------------------------- */
+.portfolio-arc {
+  position: absolute;
+  top: clamp(26px, 3.2vh, 46px);
+  left: 50%;
+  width: 300vw;
+  height: 300vw;
+  margin-left: -150vw;
+  border-radius: 50%;
+  border: 1px solid var(--portfolio-arc);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.portfolio-sparkle {
+  position: absolute;
+  z-index: 0;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(120, 110, 95, 0.5) 0%, rgba(120, 110, 95, 0) 70%);
+  clip-path: polygon(50% 0%, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0% 50%, 39% 39%);
+}
+
+.portfolio-sparkle--1 { top: 13%; left: 19%; width: 9px; height: 9px; opacity: 0.6; }
+.portfolio-sparkle--2 { top: 8%; left: 80%; opacity: 0.5; }
+.portfolio-sparkle--3 { top: 19%; left: 89%; width: 5px; height: 5px; opacity: 0.45; }
+
+@media (max-width: 767px) {
+  .portfolio-sparkle { display: none; }
+}
+
+/* ----------------------------------------------------------------
+   Corner chrome - pinned to the stage edges like the reference
+   ---------------------------------------------------------------- */
+.portfolio-brand {
+  position: absolute;
+  top: clamp(20px, 2.9vh, 30px);   /* 27 measured */
+  left: clamp(22px, 2.4vw, 42px);  /* 40 measured */
+  z-index: 3;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.portfolio-brand-mark {
+  flex: none;
+  width: 42px;
+  height: 31px;
+  color: var(--portfolio-ink);
+}
+
+.portfolio-brand-mark svg { width: 100%; height: 100%; display: block; }
+
+.portfolio-brand-divider {
+  flex: none;
+  width: 1px;
+  align-self: stretch;
+  background: var(--portfolio-border-strong);
+  opacity: 0.55;
+}
+
+.portfolio-brand-text,
+.portfolio-topright p,
+.portfolio-foot {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  line-height: 1.75;
+  color: var(--portfolio-muted);
+}
+
+.portfolio-topright {
+  position: absolute;
+  top: clamp(20px, 2.9vh, 30px);
+  right: clamp(22px, 2.4vw, 42px);
+  z-index: 3;
+  text-align: right;
+}
+
+.portfolio-topright-arrow {
+  display: inline-block;
+  padding: 0 0.55em;
+  opacity: 0.7;
+}
+
+.portfolio-foot {
+  position: absolute;
+  bottom: clamp(10px, 1.3vh, 18px);
+  z-index: 3;
+  line-height: 1.85;
+}
+
+.portfolio-foot--left { left: clamp(22px, 2.4vw, 42px); text-align: left; }
+.portfolio-foot--right { right: clamp(22px, 2.4vw, 42px); text-align: right; }
+
+@media (max-width: 1100px) {
+  .portfolio-brand,
+  .portfolio-topright,
+  .portfolio-foot { display: none; }
+}
+
+/* ----------------------------------------------------------------
+   Inner column
+   The reference's vertical rhythm falls out of centring the
+   header + stage + pills block in the viewport: measured content
+   height 794 in a 941 viewport puts the eyebrow at y=74, which is
+   exactly where the reference has it.
+   ---------------------------------------------------------------- */
+.portfolio-inner {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ----------------------------------------------------------------
+   Header
+   ---------------------------------------------------------------- */
+.portfolio-header {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin: 0 auto clamp(16px, 2.4vh, 26px); /* 23 measured to card top */
+  padding: 0 40px;
+  flex: none;
+}
+
+.portfolio-eyebrow {
+  margin: 0 0 clamp(8px, 1.5vh, 18px); /* eyebrow 74-87 -> heading 114 */
+  font-size: clamp(11.5px, 0.93vw, 16px); /* ref cap height 13 */
+  /* Explicit: the theme's body line-height of 1.6 put this 13px-tall label in
+     a 25px box and the subtitle in a 38px box, inflating the header block by
+     ~16px on the real page (the QA harness, which omits the vendor CSS, did
+     not show it). That extra height is what pushed the whole composition up. */
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--portfolio-muted);
+}
+
+.portfolio-heading {
+  margin: 0;
+  font-family: "Barlow Condensed", "Oswald", "Bebas Neue", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  /* Reference heading is 602 wide x 61 cap. Barlow Condensed at the size
+     that gives a 61 cap renders ~677 wide, so it carries a tight tracking
+     to pull the width back to the reference. */
+  font-size: clamp(54px, 5.33vw, 99px);
+  line-height: 0.86;
+  letter-spacing: -0.048em;
+  color: var(--portfolio-ink);
+}
+
+.portfolio-subtitle {
+  margin: clamp(8px, 1.25vh, 16px) 0 0; /* heading 175 -> subtitle 196 */
+  font-size: clamp(16px, 1.41vw, 25px); /* ref width 456 */
+  line-height: 1.3;
+  font-weight: 400;
+  color: rgba(21, 21, 21, 0.6);
+}
+
+/* ----------------------------------------------------------------
+   Stage row: the card fan plus its arrows
+   ---------------------------------------------------------------- */
+.portfolio-stage-row {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  height: var(--card-h);
+}
+
+.portfolio-track {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  margin: 0 auto;
+}
+
+/* Arrows sit on the outermost card's edge in the reference (measured
+   centres +-789 from stage centre, against a fan reach of 780), so they
+   are anchored to the fan rather than to the viewport. max() keeps them
+   on screen when --card-w grows on very wide displays. */
+.portfolio-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  width: var(--arrow-size);
+  height: var(--arrow-size);
+  margin-top: calc(var(--arrow-size) / -2);
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid rgba(21, 21, 21, 0.06);
+  box-shadow: 0 6px 20px rgba(120, 100, 70, 0.14);
+  color: var(--portfolio-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.portfolio-arrow--prev {
+  left: max(16px, calc(50% - var(--card-w) * 0.809 - var(--arrow-size) / 2));
+}
+
+.portfolio-arrow--next {
+  right: max(16px, calc(50% - var(--card-w) * 0.809 - var(--arrow-size) / 2));
+}
+
+.portfolio-arrow svg { width: 42%; height: 42%; }
+
+.portfolio-arrow:hover:not(:disabled) {
+  box-shadow: 0 10px 26px rgba(120, 100, 70, 0.2);
+  transform: translateY(-1px);
+}
+
+.portfolio-arrow:disabled { opacity: 0.4; cursor: default; }
+
+/* ----------------------------------------------------------------
+   Cards
+   ---------------------------------------------------------------- */
+.portfolio-card {
+  position: absolute;
+  left: 50%;
+  transition: transform 640ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 640ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.portfolio-card.is-entering {
+  transition: none;
+  opacity: 0;
+}
+
+.portfolio-card.is-entering.is-active { transform: translateX(-50%) scale(0.975); }
+
+/* --- Active card --- */
+.portfolio-card.is-active {
+  top: 0;
+  width: var(--card-w);
+  height: var(--card-h);
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  background: var(--portfolio-card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px -18px var(--portfolio-shadow),
+    0 4px 14px rgba(120, 100, 70, 0.05);
+  overflow: hidden;
+  text-align: left;
+}
+
+/* 40 / 60 split - the reference's visual is dominant */
+.portfolio-card-left {
+  flex: 0 0 40%;
+  max-width: 40%;
+  box-sizing: border-box;
+  padding: clamp(30px, 2.6vw, 44px) clamp(24px, 2.1vw, 36px);
+  display: flex;
+  flex-direction: column;
+}
+
+.portfolio-card-right {
+  flex: 1 1 60%;
+  box-sizing: border-box;
+  padding: clamp(8px, 0.72vw, 12px);
+  padding-left: 0;
+  display: flex;
+  min-width: 0;
+}
+
+.portfolio-card-meta {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 0.9vw, 15px);
+  font-size: clamp(11px, 0.83vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--portfolio-muted);
+}
+
+.portfolio-card-number {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: clamp(16px, 1.2vw, 21px);
+  letter-spacing: 0.02em;
+  color: var(--portfolio-ink);
+}
+
+.portfolio-card-meta-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--portfolio-border-strong);
+  opacity: 0.5;
+}
+
+.portfolio-card-title {
+  margin: clamp(14px, 1.5vh, 22px) 0 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.08;
+  color: var(--portfolio-ink);
+  /* Sized to the reference's LINE WIDTH (309px for "Ad Automation"), not its
+     cap height. The reference's display face is more condensed than Inter, so
+     matching its 35px cap here overflowed the column and broke the title onto
+     three lines instead of the reference's two. Wrap shape reads louder than
+     2px of cap height, and the brief rules out changing the typeface. */
+  font-size: clamp(31px, 2.69vw, 47px);
+}
+
+.portfolio-card-desc {
+  margin: clamp(12px, 1.5vh, 20px) 0 0;
+  font-size: clamp(14px, 1.02vw, 18px);
+  font-weight: 400;
+  line-height: 1.58;
+  color: var(--portfolio-body);
+}
+
+.portfolio-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(6px, 0.52vw, 9px);
+  margin-top: clamp(16px, 2vh, 26px);
+}
+
+.portfolio-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: clamp(6px, 0.48vw, 9px) clamp(10px, 0.76vw, 14px);
+  border: 1px solid var(--portfolio-border);
+  border-radius: 30px;
+  background: #ffffff;
+  font-size: clamp(10.5px, 0.73vw, 13px);
+  font-weight: 500;
+  color: rgba(21, 21, 21, 0.72);
+  white-space: nowrap;
+}
+
+.portfolio-tag-icon {
+  width: clamp(12px, 0.88vw, 16px);
+  height: clamp(12px, 0.88vw, 16px);
+  object-fit: contain;
+  flex: none;
+}
+
+.portfolio-view-btn {
+  margin-top: auto;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(10px, 0.9vw, 16px);
+  padding: clamp(11px, 0.95vw, 17px) clamp(18px, 1.5vw, 27px);
+  border: 1px solid var(--portfolio-border-strong);
+  border-radius: 40px;
+  background: #ffffff;
+  text-decoration: none;
+  color: var(--portfolio-ink);
+  font-size: clamp(13px, 0.96vw, 17px);
+  font-weight: 500;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.portfolio-view-btn-icon { display: inline-flex; width: 1.05em; height: 1.05em; }
+.portfolio-view-btn-icon svg { width: 100%; height: 100%; }
+
+.portfolio-view-btn:hover {
+  background: var(--portfolio-ink);
+  border-color: var(--portfolio-ink);
+  color: #ffffff;
+}
+
+/* --- Active card visual: architecture on top, two panels beneath --- */
+.portfolio-visual {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #f3efe8;
+  display: grid;
+  grid-template-rows: 55% 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: transparent;
+}
+
+.portfolio-visual-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 9px;
+  background: #ffffff;
+}
+
+/* The architecture diagram is shown whole - cropping it cuts the legend and
+   the bottom row of boxes, which are the part that explains the system. */
+.portfolio-visual-img--wide {
+  grid-column: 1 / -1;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.portfolio-visual-img--a { object-position: left top; }
+.portfolio-visual-img--b { object-position: left top; }
+
+/* Single-image fallback for projects without a three-panel set */
+.portfolio-visual--single {
+  display: block;
+  gap: 0;
+}
+
+.portfolio-visual--single .portfolio-visual-img {
+  position: absolute;
+  inset: 0;
+  object-position: center center;
+}
+
+.portfolio-visual-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(155deg, #f7f4ee 0%, #efe9df 100%);
+  color: rgba(21, 21, 21, 0.3);
+}
+
+.portfolio-visual-placeholder-icon { width: 32px; height: 32px; }
+.portfolio-visual-placeholder-icon svg { width: 100%; height: 100%; }
+
+.portfolio-visual-placeholder-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ----------------------------------------------------------------
+   Rear cards - portrait project sheets, vertically centred
+   ---------------------------------------------------------------- */
+.portfolio-card-rear {
+  top: 50%;
+  width: var(--rear-w);
+  height: var(--rear-h);
+  margin-top: calc(var(--rear-h) / -2);
+  display: flex;
+  flex-direction: column;
+  background: var(--portfolio-card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 16px;
+  box-shadow: 0 16px 40px -14px var(--portfolio-shadow);
+  cursor: pointer;
+  overflow: hidden;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
+  padding: 0;
+}
+
+.portfolio-card-rear-body {
+  display: block;
+  flex: none;
+  padding: calc(var(--rear-h) * 0.086) calc(var(--rear-w) * 0.125) calc(var(--rear-h) * 0.03);
+}
+
+.portfolio-card-rear-top {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: clamp(8px, 0.6vw, 11.5px);
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--portfolio-muted);
+  white-space: nowrap;
+}
+
+.portfolio-card-rear-num {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: clamp(12px, 0.88vw, 16px);
+  letter-spacing: 0.02em;
+  color: var(--portfolio-ink);
+}
+
+.portfolio-card-rear-divider {
+  width: 1px;
+  height: 11px;
+  background: var(--portfolio-border-strong);
+  opacity: 0.5;
+}
+
+.portfolio-card-rear-title {
+  display: block;
+  margin: clamp(8px, 0.72vw, 13px) 0 0;
+  font-size: clamp(13px, 1.05vw, 19px); /* fits "Business Scraper" on one line */
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.017em;
+  color: var(--portfolio-ink);
+}
+
+.portfolio-card-rear-desc {
+  display: block;
+  margin: clamp(7px, 0.6vw, 11px) 0 0;
+  font-size: clamp(10px, 0.72vw, 13px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--portfolio-body);
+}
+
+.portfolio-card-rear-visual {
+  display: block;
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: #eceae5;
+}
+
+.portfolio-card-rear-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 30%;
+}
+
+/* the side that shows is the one nearest the active card */
+.portfolio-card-rear--left .portfolio-card-rear-visual img { object-position: 85% 30%; }
+.portfolio-card-rear--right .portfolio-card-rear-visual img { object-position: 15% 30%; }
+
+/* Depth. Offsets are px multiples of --card-w so the fan keeps its
+   proportions at any card size; percentages inside translate() would
+   resolve against the rear card's own box instead. */
+.portfolio-card-rear.depth-1.portfolio-card-rear--left {
+  transform: translateX(calc(-50% - var(--card-w) * var(--d1))) scale(var(--s1));
+  opacity: 1;
+  z-index: 6;
+}
+.portfolio-card-rear.depth-1.portfolio-card-rear--right {
+  transform: translateX(calc(-50% + var(--card-w) * var(--d1))) scale(var(--s1));
+  opacity: 1;
+  z-index: 6;
+}
+.portfolio-card-rear.depth-2.portfolio-card-rear--left {
+  transform: translateX(calc(-50% - var(--card-w) * var(--d2))) scale(var(--s2));
+  opacity: 0.88;
+  z-index: 4;
+}
+.portfolio-card-rear.depth-2.portfolio-card-rear--right {
+  transform: translateX(calc(-50% + var(--card-w) * var(--d2))) scale(var(--s2));
+  opacity: 0.88;
+  z-index: 4;
+}
+.portfolio-card-rear.depth-3.portfolio-card-rear--left,
+.portfolio-card-rear.depth-3.portfolio-card-rear--right {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portfolio-card-rear:hover { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-card { transition: none !important; }
+  .portfolio-card.is-entering { opacity: 1; }
+}
+
+/* ----------------------------------------------------------------
+   Category pills
+   ---------------------------------------------------------------- */
+.portfolio-pills {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(10px, 1.0vw, 24px);
+  padding: 0 40px;
+  margin-top: clamp(24px, 4.6vh, 48px); /* card bottom 774 -> pills 817 */
+}
+
+.portfolio-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.66vw, 12px);
+  /* Height stays capped - the reference's row is wider, not chunkier - but
+     padding/gap/font scale by pure vw. Their previous px caps all bound well
+     below 1900px, which froze the row at 62% of the viewport while the
+     reference holds ~71% at every width. */
+  height: clamp(42px, 3.0vw, 52px); /* 50 measured at 1672 */
+  padding: 0 clamp(16px, 1.4vw, 35px);
+  border-radius: 40px;
+  border: 1px solid rgba(21, 21, 21, 0.11);
+  background: transparent;
+  color: rgba(21, 21, 21, 0.68);
+  font-size: clamp(13px, 1.0vw, 21px);
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+
+.portfolio-pill-icon {
+  display: inline-flex;
+  width: clamp(14px, 1.15vw, 24px);
+  height: clamp(14px, 1.15vw, 24px);
+  flex: none;
+  color: var(--portfolio-ink);
+  opacity: 0.85;
+}
+
+.portfolio-pill-icon svg { width: 100%; height: 100%; }
+
+.portfolio-pill.is-active {
+  background: #ffffff;
+  border-color: rgba(21, 21, 21, 0.08);
+  color: var(--portfolio-ink);
+  font-weight: 600;
+  box-shadow: 0 5px 16px rgba(120, 100, 70, 0.12);
+}
+
+.portfolio-pill:hover:not(.is-active) {
+  border-color: rgba(21, 21, 21, 0.24);
+  color: var(--portfolio-ink);
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   Only the geometry variables change; the fan, arrows and track all
+   derive from them, so there is no per-depth transform to restate.
+   ---------------------------------------------------------------- */
+
+/* Tall / short viewports: keep the card from outgrowing the stage. */
+@media (max-height: 820px) {
+  .portfolio-stage { --card-w: min(var(--card-w-ideal), calc(57vh * 1.83)); }
+}
+
+@media (max-width: 1400px) {
+  .portfolio-stage {
+    --card-w-ideal: clamp(760px, 60vw, 900px);
+    --d1: 0.535;
+    --d2: 0.7;
+  }
+}
+
+/* Medium desktop: one rear card per side. */
+@media (max-width: 1150px) {
+  .portfolio-header, .portfolio-pills { padding-left: 28px; padding-right: 28px; }
+  .portfolio-stage {
+    --card-w-ideal: min(740px, 72vw);
+    --card-w: min(var(--card-w-ideal), calc(62vh * 1.6));
+    --card-h: calc(var(--card-w) / 1.6);
+    --rear-w: calc(var(--card-w) * 0.34);
+    /* Pulled in from 0.58: at 1024 the single rear card reached x=-43 and was
+       clipped at both edges. 0.51 keeps its outer edge inside the viewport. */
+    --d1: 0.51;
+    --stack-reach: calc(var(--card-w) * var(--d1) + var(--rear-w) / 2);
+  }
+  /* Matches the base depth rules' specificity (3 classes each), which a
+     2-class override would lose to regardless of media query. */
+  .portfolio-card-rear.depth-2.portfolio-card-rear--left,
+  .portfolio-card-rear.depth-2.portfolio-card-rear--right {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .portfolio-arrow--prev { left: max(12px, calc(50% - var(--card-w) * 0.66 - var(--arrow-size) / 2)); }
+  .portfolio-arrow--next { right: max(12px, calc(50% - var(--card-w) * 0.66 - var(--arrow-size) / 2)); }
+}
+
+/* Tablet: stack the active card's two columns. */
+@media (max-width: 900px) {
+  .portfolio-stage {
+    --card-w-ideal: min(560px, 84vw);
+    --card-w: var(--card-w-ideal);
+    --card-h: auto;
+  }
+  .portfolio-inner { min-height: 0; padding: 64px 0; }
+  .portfolio-header, .portfolio-pills { padding-left: 24px; padding-right: 24px; }
+  .portfolio-stage-row { height: auto; }
+  .portfolio-track { height: auto; min-height: 0; }
+  /* No rear cards are shown at this width, so the active card returns to
+     normal flow - as an absolutely positioned child it could not grow the
+     track, and its content ran straight through the pills below. */
+  .portfolio-card.is-active {
+    position: relative;
+    left: auto;
+    transform: none;
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .portfolio-card.is-entering.is-active { transform: none; }
+  .portfolio-card-left,
+  .portfolio-card-right { flex: none; max-width: 100%; width: 100%; }
+  .portfolio-card-right { padding: 0 16px 16px; }
+  .portfolio-card-left { padding: 28px 22px 18px; }
+  .portfolio-visual { min-height: 240px; }
+  .portfolio-view-btn { margin-top: 20px; }
+  .portfolio-card-rear.depth-1.portfolio-card-rear--left,
+  .portfolio-card-rear.depth-1.portfolio-card-rear--right {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .portfolio-arrow--prev { left: 4px; }
+  .portfolio-arrow--next { right: 4px; }
+}
+
+@media (max-width: 700px) {
+  .portfolio-heading { font-size: clamp(34px, 11vw, 50px); }
+  .portfolio-subtitle { font-size: 15px; }
+  .portfolio-eyebrow { font-size: 12px; }
+  .portfolio-inner { padding: 56px 0; }
+  .portfolio-header, .portfolio-pills { padding-left: 18px; padding-right: 18px; }
+  .portfolio-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 9px;
+    margin-top: 28px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .portfolio-pills::-webkit-scrollbar { display: none; }
+  .portfolio-pill { flex: none; height: 40px; padding: 0 15px; font-size: 13px; }
+  .portfolio-arrow { width: 38px; height: 38px; margin-top: -19px; }
+}
+
+/* ----------------------------------------------------------------
+   Full-background showcase card
+   ----------------------------------------------------------------
+   Used when a project's visual is a single composite image baked
+   directly into the card background (no separate right-hand image
+   container). The card's width, height, aspect ratio, border-radius
+   and overflow: hidden stay *identical* to every other carousel
+   card - only the visual treatment changes.
+
+   The left 40% column sits over the image's soft-blurred region
+   so text remains legible. All font sizes, weights, colours,
+   line heights and padding are inherited from the base card styles
+   and must NOT be overridden here.
+   ---------------------------------------------------------------- */
+.portfolio-card--bg-cover.is-active {
+  /* The inline style sets background-image. These longhands complete
+     the cover treatment without touching background-image. */
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+}
+
+/* The text panel occupies the left 40% - same flex basis as the
+   normal two-panel card - but here it is the ONLY child, so it
+   must not stretch or reflow into the right zone. */
+.portfolio-card--bg-cover .portfolio-card-left {
+  flex: 0 0 40%;
+  max-width: 40%;
+  position: relative;
+  z-index: 1;  /* above the background image */
+}
+
+/* --- Operations Command Centre Specifics --- */
+.portfolio-card--operations.is-active {
+  background-size: 100% 100%;
+  background-position: right center;
+  position: relative; /* For the ::before overlay */
+}
+
+.portfolio-card--operations.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(248,245,238,0.25) 0%,
+    rgba(248,245,238,0.12) 30%,
+    rgba(248,245,238,0.00) 42%
+  );
+  backdrop-filter: none;
+  mask-image: none;
+  -webkit-backdrop-filter: none;
+  -webkit-mask-image: none;
+}
+
+.portfolio-card--operations .portfolio-card-left {
+  flex: 0 0 40%;
+  max-width: 40%;
+  position: relative;
+  z-index: 3;  /* above the overlay */
+  padding: clamp(16px, 1.8vw, 28px) clamp(24px, 2.2vw, 36px);
+}
+
+/* "Command Centre" wrapped to a third line at the old 34px, which (with
+   the description rule below never matching) pushed the panel 15px past
+   the card at 1440. 2.05vw keeps both lines whole at every card width. */
+.portfolio-card--operations .portfolio-card-title {
+  font-size: clamp(20px, 2.05vw, 30px);
+  margin-top: clamp(6px, 0.8vw, 10px);
+}
+
+/* Was ".portfolio-desc", a class no element has, so this never applied. */
+.portfolio-card--operations .portfolio-card-desc {
+  margin-top: clamp(6px, 0.8vw, 10px);
+  font-size: clamp(13px, 0.85vw, 15px);
+  line-height: 1.4;
+}
+
+.portfolio-card--operations .portfolio-tags {
+  margin-top: clamp(8px, 1.0vh, 14px);
+  gap: clamp(5px, 0.4vw, 8px);
+}
+
+.portfolio-card--operations .portfolio-view-btn {
+  margin-top: auto;
+  padding: clamp(8px, 0.8vw, 12px) clamp(16px, 1.2vw, 24px);
+}
+
+/* --- Outbound Voice Agent Specifics --- */
+.portfolio-card--outbound.is-active {
+  background-size: 100% 100%;
+  background-position: right center;
+  position: relative; /* For the ::before overlay */
+}
+
+.portfolio-card--outbound.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(248,245,238,0.32) 0%,
+    rgba(248,245,238,0.18) 30%,
+    rgba(248,245,238,0.04) 39%,
+    rgba(248,245,238,0.00) 44%
+  );
+  backdrop-filter: none;
+  mask-image: none;
+  -webkit-backdrop-filter: none;
+  -webkit-mask-image: none;
+}
+
+.portfolio-card--outbound .portfolio-card-left {
+  flex: 0 0 38%;
+  max-width: 38%;
+  position: relative;
+  z-index: 3;  /* above the overlay */
+  padding: clamp(16px, 1.8vw, 28px) clamp(24px, 2.2vw, 36px);
+}
+
+.portfolio-card--outbound .portfolio-card-title {
+  font-size: clamp(22px, 2.5vw, 34px); 
+  margin-top: clamp(6px, 0.8vw, 10px);
+}
+
+/* Was ".portfolio-desc", a class no element has, so this never applied. */
+.portfolio-card--outbound .portfolio-card-desc {
+  margin-top: clamp(6px, 0.8vw, 10px);
+  font-size: clamp(13px, 0.85vw, 15px);
+  line-height: 1.4;
+}
+
+.portfolio-card--outbound .portfolio-tags {
+  margin-top: clamp(8px, 1.0vh, 14px);
+  gap: clamp(5px, 0.4vw, 8px);
+}
+
+.portfolio-card--outbound .portfolio-view-btn {
+  margin-top: auto;
+  padding: clamp(8px, 0.8vw, 12px) clamp(16px, 1.2vw, 24px);
+}
+
+/* --- PreCall Agent Specifics --- */
+.portfolio-card--precall.is-active {
+  background-size: 100% 100%;
+  background-position: center right;
+  position: relative; /* For the ::before overlay */
+}
+
+.portfolio-card--precall.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(248,245,238,0.24) 0%,
+    rgba(248,245,238,0.12) 30%,
+    rgba(248,245,238,0.00) 43%
+  );
+}
+
+.portfolio-card--precall .portfolio-card-left {
+  flex: 0 0 40%;
+  max-width: 40%;
+  position: relative;
+  z-index: 3;  /* above the overlay */
+  padding: clamp(24px, 2vw, 36px) clamp(20px, 1.5vw, 28px) clamp(24px, 2vw, 32px);
+}
+
+.portfolio-card--precall .portfolio-card-title {
+  font-size: clamp(25px, 2.4vw, 35px);
+  margin-top: clamp(8px, 1vw, 12px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.portfolio-card--precall .portfolio-card-desc {
+  font-size: clamp(12px, 0.85vw, 15px);
+  margin-top: clamp(10px, 1.2vw, 16px);
+  line-height: 1.45;
+  padding-right: 8px;
+}
+
+.portfolio-card--precall .portfolio-tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: clamp(14px, 1.6vw, 20px);
+  gap: clamp(8px, 0.8vw, 12px);
+}
+
+.portfolio-card--precall .portfolio-tag {
+  width: 100%;
+  justify-content: flex-start;
+  padding: clamp(6px, 0.6vw, 10px) clamp(10px, 0.8vw, 14px);
+  font-size: clamp(11px, 0.75vw, 13px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.portfolio-card--precall .portfolio-view-btn {
+  margin-top: auto;
+  padding: clamp(10px, 0.9vw, 15px) clamp(16px, 1.4vw, 24px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+/* --- Restaurant Chatbot Specifics ---
+   The background is a 4-panel screenshot collage on a light canvas, not
+   one continuous photo - its own blank left margin is only ~27% of the
+   image width, narrower than the 40% text panel above it, so panel 01's
+   dark UI showed through under the title with the plain cover treatment.
+   Same fix as PreCall: stretch (not crop) so all four panels stay whole,
+   and paint a cream overlay over the text zone that fades out before the
+   second panel starts. */
+.portfolio-card--restaurant.is-active {
+  background-size: 100% 100%;
+  background-position: center right;
+  position: relative;
+}
+
+.portfolio-card--restaurant.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(248,245,238,0.96) 0%,
+    rgba(248,245,238,0.9) 18%,
+    rgba(248,245,238,0.6) 30%,
+    rgba(248,245,238,0.18) 40%,
+    rgba(248,245,238,0) 46%
+  );
+}
+
+.portfolio-card--restaurant .portfolio-card-left {
+  position: relative;
+  z-index: 3;
+}
+
+/* --- AI Blog Posting Automation Specifics ---
+   Same blur-left/sharp-right structure as PreCall (photo fading into two
+   stacked n8n screenshots), so the same stretch + cream-overlay fix
+   applies - tuned to this image's own transition point, which sits
+   fractionally later (~32-35%). This card also carries two elements no
+   other card has: a subtitle pill under the title, and eight tool tags
+   instead of four, so every size below is tightened from PreCall's to
+   keep all four tag rows inside the same fixed card height. */
+.portfolio-card--blogpost.is-active {
+  background-size: 100% 100%;
+  background-position: center right;
+  position: relative;
+}
+
+.portfolio-card--blogpost.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(248,245,238,0.96) 0%,
+    rgba(248,245,238,0.9) 20%,
+    rgba(248,245,238,0.6) 32%,
+    rgba(248,245,238,0.18) 42%,
+    rgba(248,245,238,0) 48%
+  );
+}
+
+.portfolio-card--blogpost .portfolio-card-left {
+  position: relative;
+  z-index: 3;
+  padding: clamp(14px, 1.35vw, 28px) clamp(18px, 1.4vw, 26px) clamp(12px, 1.2vw, 24px);
+  /* This card has more content rows than any other (a subtitle pill,
+     eight tags), but the fixed card height still leaves surplus space
+     at wide viewports, since the clamp()s above cap out before the box
+     does. space-between spends whatever is actually left over as even
+     gaps between every row instead of leaving it all stranded below
+     the button. */
+  justify-content: space-between;
+}
+
+.portfolio-card--blogpost .portfolio-card-title {
+  font-size: clamp(19px, 1.8vw, 29px);
+  margin-top: clamp(6px, 0.8vw, 10px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.portfolio-card--blogpost .portfolio-card-desc {
+  font-size: clamp(11.5px, 0.78vw, 13.5px);
+  margin-top: clamp(6px, 0.6vw, 12px);
+  line-height: 1.3;
+  padding-right: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  /* Without this the column squeezed the paragraph to 2-3 of its 5
+     lines at 1024-1440, clipping it with no visible cue. */
+  flex-shrink: 0;
+}
+
+.portfolio-card--blogpost .portfolio-tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: clamp(6px, 0.7vw, 14px);
+  gap: clamp(4px, 0.36vw, 7px);
+}
+
+.portfolio-card--blogpost .portfolio-tag {
+  width: 100%;
+  justify-content: flex-start;
+  padding: clamp(3.5px, 0.34vw, 7px) clamp(8px, 0.66vw, 11px);
+  font-size: clamp(10px, 0.66vw, 11.5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.portfolio-card--blogpost .portfolio-view-btn {
+  margin-top: clamp(6px, 0.75vw, 16px);
+  padding: clamp(8px, 0.78vw, 13px) clamp(14px, 1.2vw, 20px);
+  font-size: clamp(12px, 0.8vw, 14px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+/* --------------------------------------------------------------
+   Subtitle pill - shared markup, only PreCall/Blogpost-family cards
+   populate `project.subtitle`, so this rule has nothing to affect on
+   every other card.
+   -------------------------------------------------------------- */
+.portfolio-card-subtitle {
+  display: inline-block;
+  margin-top: clamp(6px, 0.8vw, 10px);
+  padding: clamp(4px, 0.4vw, 6px) clamp(10px, 0.9vw, 14px);
+  border-radius: 999px;
+  background: rgba(31, 31, 31, 0.055);
+  color: var(--text-primary, #1f1f1f);
+  font-size: clamp(10.5px, 0.68vw, 12px);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* --- AI Social Media Bot for REM Token Specifics ---
+   Same blur-left/sharp-right photo, two stacked dark panels underneath
+   as Blogpost, so the same stretch + overlay fix applies (transition
+   measured at ~30-35% here). Two things differ from Blogpost: the
+   subtitle reads as a plain tracked line with dot separators rather
+   than a pill (overridden below, scoped to this card only - the
+   shared pill style is untouched for Blogpost), and six tags in three
+   rows instead of eight in four, so sizing is a little more generous. */
+.portfolio-card--socialbot.is-active {
+  background-size: 100% 100%;
+  background-position: center right;
+  position: relative;
+}
+
+.portfolio-card--socialbot.is-active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(248,245,238,0.96) 0%,
+    rgba(248,245,238,0.9) 18%,
+    rgba(248,245,238,0.6) 30%,
+    rgba(248,245,238,0.18) 40%,
+    rgba(248,245,238,0) 46%
+  );
+}
+
+.portfolio-card--socialbot .portfolio-card-left {
+  position: relative;
+  z-index: 3;
+  padding: clamp(20px, 1.8vw, 30px) clamp(18px, 1.5vw, 28px) clamp(18px, 1.7vw, 26px);
+  justify-content: space-between;
+}
+
+.portfolio-card--socialbot .portfolio-card-title {
+  font-size: clamp(22px, 2.1vw, 31px);
+  margin-top: clamp(6px, 0.8vw, 10px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.portfolio-card--socialbot .portfolio-card-subtitle {
+  /* Corrected against the reference: this IS a pill (the shared base
+     style below), not plain text - it was misread as plain text on the
+     first pass and its background/padding stripped out. Only the
+     things that actually differ from the shared pill are overridden
+     here: uppercase, tracked, and the same dark navy the reference
+     itself uses for every tag label (sampled from the source image
+     directly, not a colour already in the site's palette). */
+  margin-top: clamp(6px, 0.7vw, 9px);
+  color: #0D212C;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.portfolio-card--socialbot .portfolio-card-desc {
+  /* The full sentence (no truncation, matching the reference) needs
+     about 6 lines at this width - a line-clamp box here turned out to
+     render at a non-line height anyway, because the flex column above
+     it was silently shrinking this item below its content size rather
+     than actually clamping it. flex-shrink: 0 stops that; sizing below
+     is tuned so the un-clamped, full-height paragraph fits the fixed
+     card height on its own. */
+  flex-shrink: 0;
+  font-size: clamp(10px, 0.66vw, 11.5px);
+  margin-top: clamp(6px, 0.6vw, 10px);
+  line-height: 1.34;
+  padding-right: 4px;
+}
+
+.portfolio-card--socialbot .portfolio-tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: clamp(8px, 0.9vw, 16px);
+  gap: clamp(6px, 0.56vw, 8px);
+}
+
+.portfolio-card--socialbot .portfolio-tag {
+  width: 100%;
+  justify-content: flex-start;
+  padding: clamp(4px, 0.42vw, 8px) clamp(9px, 0.74vw, 12px);
+  font-size: clamp(10.5px, 0.7vw, 12px);
+  color: #0D212C;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.portfolio-card--socialbot .portfolio-view-btn {
+  margin-top: clamp(8px, 0.95vw, 18px);
+  padding: clamp(9px, 0.85vw, 14px) clamp(15px, 1.3vw, 22px);
+  font-size: clamp(12.5px, 0.84vw, 15px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+
+/* On tablet where the card stacks vertically, let the text panel
+   take full width over the background. */
+@media (max-width: 900px) {
+  .portfolio-card--bg-cover .portfolio-card-left {
+    flex: none;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+
+
+/* ==========================================================================
+   VIDEO CARDS (card 06 onward)
+   Same card box and the same text panel as the image cards, but the card
+   IS the video: its first frame fills the card edge to edge, and a
+   frosted-glass panel blurs that frame live behind the text.
+
+   Play sequence (portfolio-stage.js):
+     .is-leaving  text, frost and play button leave; player loads unseen
+     .is-playing  player has loaded AND the text has gone -> player fades
+                  in over the still frame, so nothing flashes in between
+   Below 900px the card stacks: text above, video beneath, and only the
+   video area changes when it plays.
+   ========================================================================== */
+.portfolio-card--video.is-active {
+  background: #181716;
+  position: relative;
+}
+
+/* The image cards' cream overlay is replaced by the frosted panel. */
+.portfolio-card--video.is-active::before { content: none; }
+
+/* ---- the video, full bleed ------------------------------------------- */
+.portfolio-video-media {
+  position: absolute;
+  inset: 0;
+}
+
+.portfolio-video-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  z-index: 0;
+}
+
+/* Soft floor under the play button and the duration chip, so both read
+   on any first frame, including a mostly white one. */
+.portfolio-video-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 70% 50%, rgba(0,0,0,0.2), rgba(0,0,0,0) 28%),
+    linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,0.3));
+}
+
+/* ---- frosted glass behind the text ------------------------------------ */
+.portfolio-video-glass {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 47%;
+  z-index: 1;
+  pointer-events: none;
+  background: rgba(248, 245, 238, 0.74);
+  -webkit-backdrop-filter: blur(22px) saturate(1.1);
+  backdrop-filter: blur(22px) saturate(1.1);
+  /* Full frost under the 40% text column, then a short feather into the
+     sharp video instead of a hard panel edge. */
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 84%, transparent 100%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .portfolio-video-glass { background: rgba(248, 245, 238, 0.93); }
+}
+
+/* ---- text panel ------------------------------------------------------- */
+.portfolio-card--video .portfolio-card-left {
+  position: relative;
+  z-index: 3;
+  padding: clamp(20px, 1.8vw, 30px) clamp(18px, 1.5vw, 28px) clamp(18px, 1.7vw, 26px);
+  justify-content: space-between;
+}
+
+.portfolio-card--video .portfolio-card-title {
+  font-size: clamp(20px, 1.85vw, 28px);
+  margin-top: clamp(6px, 0.8vw, 10px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+/* Opt-in (titleSize: "compact") for titles whose longest line runs past
+   the text column at the standard size; 85% keeps every line on one line
+   down to the 17px floor. */
+.portfolio-card--video.portfolio-card--title-compact .portfolio-card-title {
+  font-size: clamp(17px, 1.57vw, 23.8px);
+}
+
+.portfolio-card--video .portfolio-card-subtitle {
+  margin-top: clamp(6px, 0.7vw, 9px);
+  background: rgba(31, 31, 31, 0.07);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.portfolio-card--video .portfolio-card-desc {
+  flex-shrink: 0;
+  font-size: clamp(10.5px, 0.76vw, 12.5px);
+  margin-top: clamp(7px, 0.8vw, 10px);
+  line-height: 1.36;
+  padding-right: 4px;
+  color: rgba(21, 21, 21, 0.78);
+}
+
+.portfolio-card--video .portfolio-tags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: clamp(10px, 1.1vw, 14px);
+  gap: clamp(6px, 0.52vw, 8px);
+}
+
+.portfolio-card--video .portfolio-tag {
+  width: 100%;
+  min-width: 0;
+  justify-content: flex-start;
+  padding: clamp(6px, 0.5vw, 8px) clamp(9px, 0.72vw, 12px);
+  font-size: clamp(10px, 0.68vw, 11.5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+/* Watch Demo + the quieter case-study link, side by side. */
+.portfolio-video-ctas {
+  margin-top: clamp(12px, 1.3vw, 18px);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: clamp(10px, 1vw, 16px);
+}
+
+.portfolio-card--video .portfolio-watch-btn {
+  margin-top: 0;
+  padding: clamp(9px, 0.85vw, 14px) clamp(15px, 1.3vw, 22px);
+  font-family: inherit;
+  font-size: clamp(12.5px, 0.84vw, 15px);
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.portfolio-watch-btn-icon {
+  display: inline-flex;
+  width: 0.9em;
+  height: 0.9em;
+}
+.portfolio-watch-btn-icon svg { width: 100%; height: 100%; }
+
+.portfolio-case-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--portfolio-ink);
+  font-size: clamp(11.5px, 0.76vw, 13.5px);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: rgba(21, 21, 21, 0.28);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.25s ease;
+}
+.portfolio-case-link:hover { text-decoration-color: currentColor; }
+.portfolio-case-link-icon { display: inline-flex; width: 1em; height: 1em; transition: transform 0.25s ease; }
+.portfolio-case-link-icon svg { width: 100%; height: 100%; }
+.portfolio-case-link:hover .portfolio-case-link-icon { transform: translateX(2px); }
+
+/* ---- play button, duration, player, close ----------------------------- */
+.portfolio-video-play {
+  position: absolute;
+  /* Centred in the video's visible area, right of the text column. */
+  left: 70%;
+  top: 50%;
+  z-index: 3;
+  width: clamp(54px, 4.6vw, 72px);
+  height: clamp(54px, 4.6vw, 72px);
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111111;
+  box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.45),
+    0 0 0 6px rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+}
+
+.portfolio-video-play-icon {
+  display: block;
+  width: 38%;
+  height: 38%;
+  margin-left: 7%; /* optical centre of a right-pointing triangle */
+}
+.portfolio-video-play-icon svg { width: 100%; height: 100%; display: block; }
+
+.portfolio-video-play:focus-visible,
+.portfolio-video-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 4px;
+}
+
+.portfolio-video-duration {
+  position: absolute;
+  right: clamp(12px, 1vw, 18px);
+  bottom: clamp(12px, 1vw, 18px);
+  z-index: 3;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #ffffff;
+  font-size: clamp(10px, 0.66vw, 11.5px);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.portfolio-video-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  visibility: hidden;
+  background: #000;
+}
+.portfolio-video-stage iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.portfolio-card--video.is-playing .portfolio-video-stage {
+  opacity: 1;
+  visibility: visible;
+}
+
+.portfolio-video-close {
+  position: absolute;
+  top: clamp(12px, 1vw, 16px);
+  right: clamp(12px, 1vw, 16px);
+  z-index: 5;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111111;
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+}
+.portfolio-video-close span { display: block; width: 16px; height: 16px; }
+.portfolio-video-close svg { width: 100%; height: 100%; display: block; }
+
+.portfolio-card--video.is-playing .portfolio-video-close {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---- motion ------------------------------------------------------------
+   Leaving: text slides left and fades first, the frost follows a beat
+   later, the play button shrinks away. Returning reverses it. The player
+   fade (0.3s) only starts once the leave has finished (LEAVE_MS in
+   portfolio-stage.js). Transitions are declared unconditionally and
+   switched off in the reduce block below, the same convention as the rest
+   of the site, so ?motion=1 previews them too. */
+.portfolio-card--video .portfolio-card-left {
+  transition: opacity 340ms ease, transform 420ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0s linear 0s;
+}
+.portfolio-video-glass { transition: opacity 380ms ease 60ms; }
+.portfolio-video-play {
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 260ms ease, box-shadow 260ms ease, opacity 260ms ease;
+}
+.portfolio-video-play:hover {
+  transform: translate(-50%, -50%) scale(1.07);
+  background: #ffffff;
+  box-shadow: 0 18px 36px -12px rgba(0, 0, 0, 0.5),
+    0 0 0 9px rgba(255, 255, 255, 0.3);
+}
+.portfolio-video-play:active { transform: translate(-50%, -50%) scale(0.97); }
+.portfolio-video-duration { transition: opacity 260ms ease; }
+.portfolio-video-stage { transition: opacity 300ms ease, visibility 0s linear 300ms; }
+.portfolio-card--video.is-playing .portfolio-video-stage {
+  transition: opacity 300ms ease, visibility 0s linear 0s;
+}
+.portfolio-video-close { transition: opacity 240ms ease 120ms, visibility 0s linear 360ms; }
+.portfolio-card--video.is-playing .portfolio-video-close {
+  transition: opacity 240ms ease 120ms, visibility 0s linear 0s;
+}
+
+.portfolio-card--video.is-leaving .portfolio-video-play {
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.86);
+  pointer-events: none;
+}
+.portfolio-card--video.is-leaving .portfolio-video-duration { opacity: 0; }
+
+/* Side by side only: the text and its frost step out of the video's way.
+   visibility flips only after the fade, so the fade is actually seen. */
+@media (min-width: 901px) {
+  .portfolio-card--video.is-leaving .portfolio-card-left {
+    opacity: 0;
+    transform: translateX(-28px);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 340ms ease, transform 420ms cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0s linear 420ms;
+  }
+  .portfolio-card--video.is-leaving .portfolio-video-glass { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-card--video .portfolio-card-left,
+  .portfolio-card--video.is-leaving .portfolio-card-left,
+  .portfolio-video-glass,
+  .portfolio-video-play,
+  .portfolio-video-duration,
+  .portfolio-video-stage,
+  .portfolio-card--video.is-playing .portfolio-video-stage,
+  .portfolio-video-close,
+  .portfolio-card--video.is-playing .portfolio-video-close {
+    transition: none;
+  }
+  .portfolio-video-play:hover,
+  .portfolio-video-play:active { transform: translate(-50%, -50%); }
+  .portfolio-card--video.is-leaving .portfolio-card-left { transform: none; }
+}
+
+/* ---- loading ----------------------------------------------------------
+   Loom's player takes a few seconds to arrive. If it is still loading once
+   the text has left, a quiet spinner sits over the still frame so the card
+   does not look frozen; it never shows if the player is already there. */
+.portfolio-video-spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  animation: portfolio-video-spin 0.8s linear infinite;
+  transition: opacity 180ms ease, visibility 0s linear 180ms;
+}
+
+.portfolio-card--video.is-leaving:not(.is-playing) .portfolio-video-spinner {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 200ms ease 460ms, visibility 0s linear 460ms;
+}
+
+@keyframes portfolio-video-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-video-spinner { animation-duration: 1.8s; }
+  .portfolio-card--video.is-leaving:not(.is-playing) .portfolio-video-spinner {
+    transition: none;
+  }
+}
+
+/* ---- stacked (below 900px) -------------------------------------------- */
+@media (max-width: 900px) {
+  .portfolio-card--video.is-active {
+    background: var(--portfolio-card-bg);
+  }
+  .portfolio-video-glass { display: none; }
+  .portfolio-card--video .portfolio-card-left { justify-content: flex-start; }
+  /* In flow beneath the text, at the video's own shape. */
+  .portfolio-video-media {
+    position: relative;
+    inset: auto;
+    order: 2;
+    margin: 0 16px 18px;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #111;
+  }
+  .portfolio-video-media::after {
+    background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.2), rgba(0,0,0,0) 38%),
+      linear-gradient(180deg, rgba(0,0,0,0) 62%, rgba(0,0,0,0.3));
+  }
+  .portfolio-video-play { left: 50%; }
+  .portfolio-video-close { width: 32px; height: 32px; top: 10px; right: 10px; }
+  /* Nothing leaves when stacked, so no reason to wait before showing it. */
+  .portfolio-card--video.is-leaving:not(.is-playing) .portfolio-video-spinner {
+    transition: opacity 200ms ease, visibility 0s linear 0s;
+  }
+}
+
+/* --------------------------------------------------------------
+   View Project: one size and one position on every card
+   Each image card's own rules (operations, outbound, blogpost,
+   socialbot, multi-store) gave the button a different size and a
+   different gap to the card's bottom edge, so it sat at a different
+   height on every card. It now matches the video cards' Watch Demo:
+   same padding, pinned to the bottom with the same bottom inset.
+   Desktop/tablet only; the stacked phone card is unchanged.
+   -------------------------------------------------------------- */
+@media (min-width: 901px) {
+  #projects .portfolio-card.is-active .portfolio-view-btn {
+    margin-top: auto;
+    align-self: flex-start;
+    padding: clamp(9px, 0.85vw, 14px) clamp(15px, 1.3vw, 22px);
+  }
+  /* Watch Demo's row is pinned the same way */
+  #projects .portfolio-card.is-active .portfolio-video-ctas { margin-top: auto; }
+  /* the button needs its own room above it once a short card is full */
+  #projects .portfolio-card.is-active .portfolio-tags { margin-bottom: clamp(10px, 1vw, 14px); }
+  /* same bottom and left inset as the video cards */
+  #projects .portfolio-card--bg-cover.is-active:not(.portfolio-card--video) .portfolio-card-left {
+    padding-bottom: clamp(18px, 1.7vw, 26px);
+    padding-left: clamp(18px, 1.5vw, 28px);
+  }
+}

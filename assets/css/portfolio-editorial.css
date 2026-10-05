@@ -1,0 +1,66 @@
+/* ================================================================
+   FEATURED PROJECTS - editorial restyle (approved 2026-10-01, option 2)
+   The section's type and chrome in the site's Jost/Inter language:
+   a left-aligned two-weight headline, credits-style labels, cards in
+   Jost, category pills as underlined text tabs. Loaded after
+   portfolio-stage.css; layout and geometry there are untouched.
+   ================================================================ */
+/* ---------------- cards + corner chrome ---------------- */
+#projects { --ink:#121212; --soft:#8f8a82; --hair:rgba(18,18,18,.12); }
+/* corner chrome: quieter credits */
+#projects .portfolio-brand-text, #projects .portfolio-topright p, #projects .portfolio-foot {
+  font: 500 10px/1.9 "Inter",sans-serif !important; letter-spacing:.28em !important; color: var(--soft) !important; }
+#projects .portfolio-brand-mark { width:32px !important; height:24px !important; }
+/* active card text */
+#projects .portfolio-card-meta { font: 500 10.5px/1 "Inter",sans-serif !important; letter-spacing:.28em !important; color: var(--soft) !important; }
+#projects .portfolio-card-number { font: 300 15px/1 "Jost",sans-serif !important; letter-spacing:.04em !important; color: var(--ink) !important; }
+#projects .portfolio-card-number::after { content:" / 16"; color: var(--soft); }
+#projects .portfolio-card-title { font-family:"Jost",sans-serif !important; font-weight:400 !important; letter-spacing:-.015em !important; line-height:1.04 !important; }
+#projects .portfolio-card-desc { font-family:"Inter",sans-serif !important; font-weight:400 !important; color:#6b665f !important; line-height:1.65 !important; }
+#projects .portfolio-tag { background: transparent !important; box-shadow:none !important; border:1px solid var(--hair) !important; border-radius:999px !important; font-family:"Inter",sans-serif !important; font-weight:400 !important; color:#4a4640 !important; }
+#projects .portfolio-view-btn, #projects .portfolio-watch-btn {
+  background: var(--ink) !important; color:#fff !important; border:0 !important; box-shadow:none !important;
+  font: 500 15px/1 "Jost",sans-serif !important; letter-spacing:.02em !important; }
+#projects .portfolio-view-btn-icon, #projects .portfolio-watch-btn-icon { color:#fff !important; }
+#projects .portfolio-view-btn-icon svg, #projects .portfolio-watch-btn-icon svg { stroke:#fff !important; }
+/* side cards */
+#projects .portfolio-card-rear-title { font-family:"Jost",sans-serif !important; font-weight:500 !important; letter-spacing:-.01em !important; }
+#projects .portfolio-card-rear-num { font: 300 14px/1 "Jost",sans-serif !important; }
+#projects .portfolio-card-rear-top { letter-spacing:.24em !important; font-size:9.5px !important; }
+#projects .portfolio-card-rear-desc { color:#7a756e !important; }
+
+/* ---------------- header + category tabs ---------------- */
+#projects .portfolio-header { display:grid !important; grid-template-columns: 1fr auto; align-items:end; text-align:left !important; width: min(100%, calc(var(--card-w) * 1.12)); margin-left:auto; margin-right:auto; column-gap:40px; }
+#projects .portfolio-eyebrow { grid-column: 1 / -1; font: 500 11px/1 "Inter",sans-serif !important; letter-spacing:.3em !important; color: var(--soft) !important; text-align:left !important; }
+#projects .portfolio-eyebrow::before { content:"02 / "; color: var(--ink); }
+#projects .portfolio-heading { font-family:"Jost",sans-serif !important; font-weight:300 !important; text-transform:none !important; letter-spacing:-.03em !important; line-height:.95 !important; font-size: clamp(54px,5.2vw,96px) !important; color: var(--ink) !important; text-align:left !important; }
+#projects .portfolio-heading b, #projects .portfolio-heading strong { font-weight:600; }
+#projects .portfolio-heading .q { color:#9a948b; }
+#projects .portfolio-subtitle { font: 400 14px/1.6 "Inter",sans-serif !important; color: #6b665f !important; text-align:right !important; max-width: 300px; margin-bottom: 14px !important; }
+/* pills -> underline tabs */
+#projects .portfolio-pills { gap: 34px !important; }
+#projects .portfolio-pill { background: transparent !important; border: 0 !important; border-radius:0 !important; box-shadow:none !important; height:auto !important; padding: 0 0 10px !important;
+  font: 400 clamp(13px,.95vw,16px)/1 "Jost",sans-serif !important; color: var(--soft) !important; position:relative; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
+#projects .portfolio-pill-icon { display:none !important; }
+#projects .portfolio-pill.is-active { color: var(--ink) !important; }
+#projects .portfolio-pill.is-active::after { content:""; position:absolute; left:0; right:0; bottom:0; height:1.5px; background: var(--ink); }
+@media (max-width:767px){
+  #projects .portfolio-header{ grid-template-columns:1fr; width:auto; padding:0 20px; }
+  #projects .portfolio-heading{ font-size:46px !important; }
+  #projects .portfolio-subtitle{ text-align:left !important; max-width:none; margin-top:10px !important; }
+  #projects .portfolio-pills{ gap:22px !important; }
+}
+
+
+/* ---------------- phones: card text on a frosted panel ----------------
+   On a phone the card's text sits over its screenshot; a frosted panel
+   keeps it readable. */
+@media (max-width: 767px) {
+  #projects .portfolio-card.is-active .portfolio-card-left {
+    background: rgba(255, 255, 255, 0.86);
+    -webkit-backdrop-filter: blur(14px) saturate(1.1);
+    backdrop-filter: blur(14px) saturate(1.1);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px -18px rgba(18, 18, 18, 0.35);
+  }
+}

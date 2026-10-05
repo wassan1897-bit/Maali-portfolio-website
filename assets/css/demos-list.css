@@ -1,0 +1,266 @@
+/* ================================================================
+   VIDEO DEMOS LIST (#services) - header, row hover + preview,
+   tidy ending, compact phone rows. Behaviour: demos-list.js.
+   The rows' own markup and paging (new-slider.js) are unchanged.
+   ================================================================ */
+
+#services.feature-three-area {
+  padding-top: clamp(56px, 6vw, 88px) !important;
+  padding-bottom: clamp(48px, 5vw, 72px) !important;
+}
+
+/* ---------------- Header ---------------- */
+.demos-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 40px;
+  margin: 0 0 clamp(26px, 3vw, 40px);
+}
+
+.demos-head__eyebrow {
+  margin: 0 0 16px;
+  font: 500 11px/1 "Inter", sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted, #6d675f);
+}
+
+.demos-head__title {
+  margin: 0;
+  font-family: "Barlow Condensed", "Oswald", "Bebas Neue", sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: clamp(40px, 4.4vw, 76px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #121212);
+}
+
+.demos-head__meta {
+  max-width: 380px;
+  margin: 0;
+  text-align: right;
+  font: 400 17px/1.55 "Inter", sans-serif;
+  color: var(--text-body, #55504a);
+}
+
+.demos-head__meta b {
+  display: block;
+  margin-bottom: 10px;
+  font: 500 11px/1 "Inter", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary, #121212);
+}
+
+/* ---------------- Rows ---------------- */
+/* The template closes the list with :last-child's bottom border, which
+   paging hides; the last *visible* row is marked instead. */
+#services .feature-three-single:last-child { border-bottom: 0; }
+#services .feature-three-single.is-last-visible { border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+
+#services .feature-three-single { position: relative; }
+
+#services .feature-three-item {
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#services .feature-three-text {
+  transition: opacity 400ms ease, color 300ms ease;
+}
+
+/* the underline that draws in under the hovered row */
+#services .feature-three-single::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--text-primary, #121212);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+#services .feature-three-single.is-hot::after { transform: scaleX(1); }
+#services .feature-three-single.is-hot .feature-three-item { transform: translateX(14px); }
+#services .feature-three-wrapper.has-hot .feature-three-single:not(.is-hot) .feature-three-text { opacity: 0.38; }
+
+/* row thumbnails: phones only (desktop gets the floating preview) */
+.demos-thumb { display: none; }
+
+/* ---------------- Floating preview (desktop) ---------------- */
+.demos-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: clamp(240px, 21vw, 320px);
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #111;
+  pointer-events: none;
+  box-shadow: 0 30px 60px -20px rgba(30, 20, 10, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  /* position and lean are written every frame (demos-list.js), so they
+     live on `transform`; the pop-in uses the separate `scale` property,
+     which can transition on its own */
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) translate(-50%, -50%) rotate(var(--rot, -3deg));
+  scale: 0.9;
+  transition: opacity 300ms ease, scale 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.demos-preview.is-on {
+  opacity: 1;
+  scale: 1;
+}
+
+.demos-preview img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 260ms ease;
+}
+
+.demos-preview img.is-shown { opacity: 1; }
+
+.demos-preview__tag {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 11px 6px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  font: 600 11px/1 "Inter", sans-serif;
+  color: #111;
+}
+
+.demos-preview__tag i {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 0 5px 8px;
+  border-color: transparent transparent transparent #111;
+}
+
+/* ---------------- Ending ---------------- */
+#services .demos-pagination {
+  align-items: center;
+  margin-top: clamp(32px, 3.5vw, 48px) !important;
+}
+
+.demos-count {
+  margin-right: 6px;
+  font: 500 11px/1 "Inter", sans-serif;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted, #6d675f);
+  white-space: nowrap;
+}
+
+.demos-end {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: clamp(40px, 4.5vw, 64px);
+  font: 500 11px/1 "Inter", sans-serif;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-muted, #6d675f);
+  text-decoration: none;
+}
+
+.demos-end::before,
+.demos-end::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(18, 18, 18, 0.14);
+}
+
+.demos-end span { display: inline-block; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+@media (hover: hover) and (pointer: fine) {
+  .demos-end:hover { color: var(--text-primary, #121212); }
+  .demos-end:hover span { transform: translateY(3px); }
+}
+
+/* ---------------- Tablet ---------------- */
+@media (max-width: 991px) {
+  .demos-head { grid-template-columns: 1fr; gap: 16px; }
+  .demos-head__meta { text-align: left; }
+}
+
+/* ---------------- Phones: compact rows with a thumbnail ---------------- */
+@media (max-width: 767px) {
+  .demos-head__meta { font-size: 15px; }
+
+  #services .feature-three-single { padding-block: 16px; }
+
+  #services .feature-three-item { flex-wrap: nowrap !important; align-items: center !important; gap: 12px; }
+
+  #services .feature-three-left {
+    display: grid !important;
+    grid-template-columns: 88px 1fr;
+    grid-template-areas:
+      "thumb title"
+      "thumb cat";
+    column-gap: 14px;
+    row-gap: 4px;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .demos-thumb {
+    grid-area: thumb;
+    display: block;
+    width: 88px;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #ddd6cc;
+  }
+
+  .demos-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  /* number | title | category inside the left block */
+  #services .feature-three-left > div:nth-of-type(1) { display: none; }
+  #services .feature-three-left > div:nth-of-type(2) { grid-area: title; min-width: 0; }
+  #services .feature-three-left > div:nth-of-type(3) { grid-area: cat; min-width: 0; }
+
+  #services .feature-three-left .feature-three-text {
+    width: auto !important;
+    font-size: 15.5px !important;
+    line-height: 1.3;
+  }
+
+  #services .feature-three-left > div:nth-of-type(3) .feature-three-text {
+    font-size: 10.5px !important;
+    letter-spacing: 0.14em;
+    color: var(--text-muted, #6d675f) !important;
+  }
+
+  #services .feature-three-item > div:last-child .feature-three-text i { font-size: 18px !important; }
+
+  #services .demos-pagination { flex-wrap: wrap; row-gap: 14px; }
+  .demos-count { width: 100%; text-align: center; margin: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-preview) #services .feature-three-item,
+  html:not(.motion-preview) #services .feature-three-single::after,
+  html:not(.motion-preview) .demos-preview { transition: none; }
+  html:not(.motion-preview) #services .feature-three-single.is-hot .feature-three-item { transform: none; }
+}

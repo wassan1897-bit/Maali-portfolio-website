@@ -1,0 +1,84 @@
+/* ================================================================
+   SCROLL REVEAL - [data-reveal], driven by assets/js/reveal.js
+   ================================================================
+
+   One reveal system for every section that does not have its own
+   bespoke sequence (the hero, About, Featured Projects and the final
+   CTA each run their own GSAP timelines).
+
+   Why not AOS, which the theme shipped with:
+   The page runs GSAP ScrollSmoother on #smooth-wrapper / #smooth-content,
+   which scrolls by transforming the content and easing that transform
+   toward the real scroll position. AOS decides what is on screen from
+   document coordinates (offsetTop + pageYOffset), i.e. the page before
+   that transform, so it fires at the wrong moments - and with
+   `once: false` it also REMOVED .aos-animate again, dropping elements
+   that were genuinely on screen back to opacity 0. That is what left
+   the Tech Stack logos permanently invisible.
+
+   IntersectionObserver reports real rendered geometry instead, so the
+   smoother's transform is already accounted for and browser zoom cannot
+   shift the trigger point.
+
+   Motion: short distances and a long, soft deceleration - things settle
+   into place rather than fly in. Elements that enter together are
+   staggered by reveal.js, so no per-element delays are needed.
+   ================================================================ */
+
+[data-reveal] {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-duration: 900ms;       /* data-reveal-duration overrides */
+  will-change: opacity, transform;
+}
+
+/* Starting positions. */
+[data-reveal="fade-up"]    { transform: translate3d(0, 28px, 0); }
+[data-reveal="fade-down"]  { transform: translate3d(0, -20px, 0); }
+[data-reveal="fade-left"]  { transform: translate3d(36px, 0, 0); }
+[data-reveal="fade-right"] { transform: translate3d(-36px, 0, 0); }
+[data-reveal="fade"]       { transform: none; }
+[data-reveal="zoom-in"]    { transform: scale(0.94); }
+[data-reveal="zoom-out"]   { transform: scale(1.04); }
+/* A rise with a slight settle in scale, for cards and tiles. */
+[data-reveal="rise"]       { transform: translate3d(0, 34px, 0) scale(0.97); }
+
+/* Opacity lands a little before the movement does, which is what makes
+   it read as settling rather than sliding. */
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  transition-property: opacity, transform;
+}
+
+[data-reveal].is-revealed:not([data-reveal="fade"]) {
+  transition-duration: 700ms, 1000ms;
+}
+
+/* Once revealed, drop the compositing hint and the transition, so hover
+   effects on the same element are not slowed by the entrance timing. */
+[data-reveal].is-settled {
+  will-change: auto;
+  transition: none;
+}
+
+/* No observer (or no JS): show everything rather than hide it. */
+[data-reveal].reveal-disabled {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-preview) [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Re-armed after leaving through the top of the screen (reveal.js):
+   scrolling back up, the element comes down into place instead. */
+[data-reveal].reveal-from-above:not(.is-revealed) { transform: translate3d(0, -28px, 0); }
+[data-reveal="rise"].reveal-from-above:not(.is-revealed) { transform: translate3d(0, -34px, 0) scale(0.97); }

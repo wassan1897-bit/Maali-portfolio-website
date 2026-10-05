@@ -1,0 +1,452 @@
+/* ================================================================
+   MAALI'S ASSISTANT (approved 2026-10-05, design C "personal card")
+   A dark launcher pill with Maali's photo opens a white card: dark
+   header with his cutout, four topic tiles, then a conversation that
+   answers from the portfolio (assets/js/chat-widget.js).
+   ================================================================ */
+.mc {
+  --mc-ink: #121212;
+  --mc-body: #2b2925;
+  --mc-muted: #8a847b;
+  --mc-line: #ece6dd;
+  --mc-soft: #f6f2ec;
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 9999;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mc *, .mc *::before, .mc *::after { box-sizing: border-box; }
+
+.mc-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------------- launcher ---------------- */
+.mc-launcher {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  height: 52px;
+  padding: 6px 20px 6px 6px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--mc-ink);
+  color: #fff;
+  font: 500 14px/1 "Inter", sans-serif;
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), 0 14px 32px -12px rgba(0, 0, 0, 0.55);
+  transition: transform 220ms ease, box-shadow 220ms ease, padding 260ms ease;
+}
+.mc-launcher:hover { transform: translateY(-2px); }
+.mc-launcher:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+.mc-launcher-face {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  background: #e9e1d6;
+}
+
+.mc-launcher-label {
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: max-width 360ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 240ms ease;
+}
+
+/* over the hero the launcher is just his photo, so it does not cover
+   the hero's own social icons; it grows into the pill once the page
+   scrolls, or on hover/focus */
+.mc.is-compact:not(.is-open) .mc-launcher:not(:hover):not(:focus-visible) {
+  gap: 0;
+  padding-right: 6px;
+}
+.mc.is-compact:not(.is-open) .mc-launcher:not(:hover):not(:focus-visible) .mc-launcher-label {
+  max-width: 0;
+  opacity: 0;
+}
+
+.mc-launcher-x {
+  display: none;
+  width: 18px;
+  height: 18px;
+}
+.mc-launcher-x svg { width: 100%; height: 100%; }
+
+.mc.is-open .mc-launcher { padding-right: 16px; }
+.mc.is-open .mc-launcher-x { display: block; }
+
+/* ---------------- panel ---------------- */
+.mc-panel {
+  position: absolute;
+  right: 0;
+  bottom: 66px;
+  width: 380px;
+  max-height: min(640px, calc(100vh - 120px));
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 0 0 1px rgba(18, 18, 18, 0.06), 0 30px 80px -20px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
+  transform-origin: 100% 100%;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.96);
+  transition: opacity 240ms ease, transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 320ms;
+}
+
+.mc.is-open .mc-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity 240ms ease, transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s;
+}
+
+/* header: dark band with his cutout on the right */
+.mc-head {
+  position: relative;
+  flex: none;
+  height: 132px;
+  background: linear-gradient(180deg, #1b1d20, #2a2724);
+  color: #f3eee7;
+  overflow: hidden;
+  transition: height 300ms ease;
+}
+
+.mc-head-copy {
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  right: 150px;
+  z-index: 2;
+}
+
+.mc-head-title {
+  margin: 0;
+  font: 500 20px/1.15 "Jost", "Inter", sans-serif;
+  letter-spacing: -0.005em;
+}
+
+.mc-head-sub {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #bdb5aa;
+}
+.mc-head-sub i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3ecf8e;
+  box-shadow: 0 0 0 3px rgba(62, 207, 142, 0.18);
+}
+
+.mc-head-photo {
+  position: absolute;
+  right: 40px;
+  bottom: 0;
+  height: 128px;
+  width: auto;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.mc-icon-btn {
+  position: absolute;
+  top: 12px;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #f3eee7;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  transition: background-color 200ms ease;
+}
+.mc-icon-btn:hover { background: rgba(255, 255, 255, 0.22); }
+.mc-icon-btn svg { width: 15px; height: 15px; }
+.mc-close { right: 12px; }
+.mc-home { right: 48px; }
+.mc-icon-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+/* once a conversation starts the header slims down */
+.mc.is-chatting .mc-head { height: 76px; }
+.mc.is-chatting .mc-head-copy { top: 18px; }
+.mc.is-chatting .mc-head-title { font-size: 17px; }
+.mc.is-chatting .mc-head-sub { margin-top: 5px; }
+.mc.is-chatting .mc-head-photo { height: 84px; right: 84px; }
+
+/* ---------------- conversation ---------------- */
+.mc-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 18px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+}
+
+.mc-msg {
+  max-width: 88%;
+  padding: 11px 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--mc-body);
+  animation: mc-in 260ms ease both;
+}
+
+.mc-bot {
+  align-self: flex-start;
+  background: var(--mc-soft);
+  border-radius: 16px 16px 16px 4px;
+}
+
+.mc-user {
+  align-self: flex-end;
+  background: var(--mc-ink);
+  color: #fff;
+  border-radius: 16px 16px 4px 16px;
+}
+
+.mc-msg a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+
+@keyframes mc-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mc-typing {
+  align-self: flex-start;
+  display: flex;
+  gap: 4px;
+  padding: 13px 14px;
+  background: var(--mc-soft);
+  border-radius: 16px 16px 16px 4px;
+}
+.mc-typing i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b9b2a8;
+  animation: mc-dot 1s infinite ease-in-out;
+}
+.mc-typing i:nth-child(2) { animation-delay: 0.15s; }
+.mc-typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes mc-dot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+  40% { transform: translateY(-3px); opacity: 1; }
+}
+
+/* topic tiles */
+.mc-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  animation: mc-in 260ms ease both;
+}
+
+.mc-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px;
+  border: 1px solid var(--mc-line);
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 200ms ease, background-color 200ms ease, transform 200ms ease;
+}
+.mc-tile:hover { border-color: #cfc7bb; background: #fcfaf7; transform: translateY(-1px); }
+.mc-tile:focus-visible { outline: 2px solid var(--mc-ink); outline-offset: 2px; }
+.mc-tile b { font-size: 13px; font-weight: 600; color: var(--mc-ink); }
+.mc-tile small { font-size: 11.5px; color: var(--mc-muted); }
+.mc-tile-ic {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: var(--mc-soft);
+  color: var(--mc-ink);
+}
+.mc-tile-ic svg { width: 15px; height: 15px; }
+
+/* project rows inside an answer */
+.mc-list {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: mc-in 260ms ease both;
+}
+
+.mc-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 10px 6px 6px;
+  border: 1px solid var(--mc-line);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--mc-ink);
+  text-decoration: none;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+.mc-item:hover { border-color: #cfc7bb; background: #fcfaf7; }
+.mc-item img {
+  width: 58px;
+  height: 36px;
+  border-radius: 7px;
+  object-fit: cover;
+  flex: none;
+  background: var(--mc-soft);
+}
+.mc-item span { min-width: 0; }
+.mc-item b {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mc-item small { display: block; font-size: 11px; color: var(--mc-muted); margin-top: 1px; }
+.mc-item svg { width: 14px; height: 14px; margin-left: auto; flex: none; color: #9a948b; }
+
+/* chips: tools, follow-ups */
+.mc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  animation: mc-in 260ms ease both;
+}
+
+.mc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border: 1px solid #ddd6cb;
+  border-radius: 999px;
+  background: #fff;
+  color: #3a362f;
+  font: 500 12px/1 "Inter", sans-serif;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+.mc-chip:hover { border-color: #bfb7aa; background: #fcfaf7; }
+.mc-chip--static { cursor: default; font-weight: 400; }
+.mc-chip--static:hover { border-color: #ddd6cb; background: #fff; }
+.mc-chip--dark { background: var(--mc-ink); border-color: var(--mc-ink); color: #fff; }
+.mc-chip--dark:hover { background: #2a2826; border-color: #2a2826; }
+.mc-chip svg { width: 13px; height: 13px; }
+
+/* follow-up row: a quieter label above it */
+.mc-follow-label {
+  margin: 4px 0 -2px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #a39d94;
+}
+
+/* ---------------- input ---------------- */
+.mc-foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 18px 18px;
+  padding: 6px 6px 6px 14px;
+  background: var(--mc-soft);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+.mc-foot:focus-within { border-color: #d9d1c5; background: #fff; }
+
+.mc-foot input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: 400 14px/1.2 "Inter", sans-serif;
+  color: var(--mc-ink);
+}
+.mc-foot input::placeholder { color: #9a948b; }
+
+.mc-send {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: var(--mc-ink);
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 200ms ease;
+}
+.mc-send svg { width: 17px; height: 17px; }
+.mc-send:focus-visible { outline: 2px solid var(--mc-ink); outline-offset: 2px; }
+
+/* ---------------- phones ---------------- */
+@media (max-width: 768px) {
+  .mc { right: 16px; bottom: 16px; }
+  /* the launcher shrinks to his photo alone */
+  .mc-launcher { width: 54px; height: 54px; padding: 5px; justify-content: center; }
+  .mc-launcher-face { width: 44px; height: 44px; }
+  .mc-launcher-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .mc.is-open .mc-launcher { padding: 5px; }
+  .mc.is-open .mc-launcher-face { display: none; }
+  .mc.is-open .mc-launcher-x { width: 20px; height: 20px; }
+  .mc-panel {
+    position: fixed;
+    right: 12px;
+    left: 12px;
+    bottom: 82px;
+    width: auto;
+    max-height: calc(100dvh - 104px);
+  }
+  .mc-foot input { font-size: 16px; } /* no zoom on focus in iOS Safari */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-panel, .mc.is-open .mc-panel { transition: none; transform: none; }
+  .mc-msg, .mc-tiles, .mc-list, .mc-chips { animation: none; }
+  .mc-typing i { animation: none; opacity: 0.7; }
+}

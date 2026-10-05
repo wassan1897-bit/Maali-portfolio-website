@@ -1,0 +1,290 @@
+/* ================================================================
+   Dead #projects / .card / .slider-* / .bottom-project-nav / etc.
+   rules (the old 3D-perspective slider) removed here - that whole
+   component was replaced by assets/css/portfolio-stage.css. This
+   file keeps only what was never part of it: the video-demos
+   overlay, the brand-logo grid fix, and the other unrelated rules
+   below.
+   ================================================================ */
+
+/* ========================================================================= */
+/* Video Demos Touch & Hover Animations */
+/* ========================================================================= */
+
+.demos-trigger {
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
+.demos-trigger:hover {
+  background-color: rgba(31, 31, 31, 0.04) !important;
+  transform: translateX(12px) !important;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.demos-trigger:active {
+  transform: translateX(12px) scale(0.99) !important;
+}
+
+.demos-trigger .ph-arrow-up-right {
+  transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.demos-trigger:hover .ph-arrow-up-right {
+  transform: translate(4px, -4px);
+  color: #000;
+}
+
+
+
+/* ========================================================================= */
+/* Fix Client Logos Grid Sizing & Alignment */
+/* ========================================================================= */
+.brand-three-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px !important;
+    padding: 20px !important;
+}
+
+.brand-three-item .brand-active-media,
+.brand-three-item .brand-hover-media {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.brand-three-item img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    max-width: 140px;
+    max-height: 50px;
+}
+
+
+
+/* ========================================================================= */
+/* Premium Cards for Logos */
+/* ========================================================================= */
+.premium-card {
+    background: var(--bg-surface, #fbf8f4) !important;
+    border: 1px solid rgba(0, 0, 0, 0.06) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
+    border-radius: 16px !important;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    height: 140px !important; /* Fixed height for uniformity */
+    padding: 30px !important;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.premium-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.premium-card img {
+    max-width: 80% !important;
+    max-height: 70px !important;
+    object-fit: contain !important;
+    margin: 0 auto;
+}
+
+/* Ensure the spans perfectly center the image */
+.premium-card .brand-active-media,
+.premium-card .brand-hover-media {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* --- White Theme Footer Overrides --- */
+.white-theme-footer {
+  /* The footer is page surface, not a card - it takes --bg-primary.
+     The old white radial wash is dropped: on cream it read as a pale
+     patch in the middle of the footer rather than a "premium" glow. */
+  background-color: var(--bg-primary, #f6f0e9) !important;
+  background-image: none !important;
+}
+
+/* RE-ENABLED TEXTURE FOR LIGHT THEME */
+.white-theme-footer img[src*="footer-three-bg-shape.png"] {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  filter: invert(1) opacity(0.8) !important; /* Increased opacity */
+  mix-blend-mode: normal !important;
+  pointer-events: none !important;
+  z-index: 0 !important; /* Bring in front of section background */
+}
+
+/* Ensure content stays on top of the texture */
+.white-theme-footer .container,
+.white-theme-footer .container-fluid,
+.white-theme-footer .footer-three-border {
+  position: relative;
+  z-index: 1;
+}
+
+/* Headings and Text */
+.white-theme-footer h2,
+.white-theme-footer h3,
+.white-theme-footer h4,
+.white-theme-footer h5,
+.white-theme-footer p,
+.white-theme-footer .text-white,
+.white-theme-footer .text-white-50 {
+  color: #111 !important;
+}
+
+/* Contact Info (previously neon green) */
+.white-theme-footer .text-main-600 {
+  color: #111 !important;
+  font-weight: 700 !important;
+}
+
+/* Form Fields */
+.white-theme-footer .form-control {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+  border-radius: 8px !important;
+}
+.white-theme-footer .form-control::placeholder {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+.white-theme-footer .form-control:focus {
+  background: var(--bg-surface, #fbf8f4) !important;
+  border-color: rgba(0,0,0,0.3) !important;
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.05) !important;
+}
+
+/* Submit Button */
+.white-theme-footer button.bg-main-600 {
+  background-color: #111 !important;
+  color: #fff !important;
+  border-radius: 30px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  transition: all 0.3s ease !important;
+  border: 1px solid #111 !important;
+}
+.white-theme-footer button.bg-main-600:hover {
+  background-color: var(--bg-surface, #fbf8f4) !important;
+  color: #111 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+}
+
+/* Profile Card */
+.white-theme-footer .footer-three-top-info {
+  background: var(--bg-surface, #fbf8f4) !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.03) !important;
+  border: 1px solid rgba(0,0,0,0.04) !important;
+  border-radius: 16px !important;
+}
+.white-theme-footer .footer-three-top-info h3,
+.white-theme-footer .footer-three-top-info p {
+  color: #000 !important;
+}
+
+/* Social Icons in Profile Card */
+.white-theme-footer .footer-three-social a {
+  background-color: var(--bg-surface, #fbf8f4) !important;
+  color: #111 !important;
+  border-radius: 8px !important;
+}
+.white-theme-footer .footer-three-social a:hover {
+  background-color: #111 !important;
+  color: #fff !important;
+}
+
+/* Bottom Quick Links and Copyright */
+.white-theme-footer .text-white-50 {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+.white-theme-footer a.text-white:hover {
+  color: #000 !important;
+  opacity: 0.8 !important;
+}
+
+/* Scroll to top button */
+.white-theme-footer .bg-main-two-600 {
+  background-color: #111 !important;
+  color: #fff !important;
+}
+.white-theme-footer .bg-main-two-600:hover {
+  background-color: #333 !important;
+}
+
+/* Divider Lines */
+.white-theme-footer .footer-three-border {
+  border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Giant Bottom Text */
+.white-theme-footer .footer-three-bottom-title {
+  color: #111 !important;
+  -webkit-text-stroke: 0 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  font-size: clamp(60px, 12vw, 290px) !important;
+}
+
+/* Pulsing Status Dot */
+.pulse-dot {
+  width: 14px;
+  height: 14px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  animation: pulse-green 2s infinite;
+  margin-right: 12px;
+}
+
+@keyframes pulse-green {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+/* Tech Stack logos: the files are cropped to the logo itself and each
+   carries its own width (--logo-w, set inline), picked so every mark
+   covers about the same area. Before, the files' built-in margins made
+   ElevenLabs, Airtable, Python and LlamaIndex render a fraction of the
+   size of n8n and OpenAI. */
+.premium-card img[style*="--logo-w"] {
+    width: var(--logo-w) !important;
+    height: auto !important;
+    max-width: 78% !important;
+    max-height: 64px !important;
+}

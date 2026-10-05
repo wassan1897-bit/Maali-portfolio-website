@@ -1,0 +1,61 @@
+/* ================================================================
+   PHONES ONLY (max-width: 767px) - loaded last.
+   Every rule here sits inside the media query below, so the desktop
+   and tablet layouts cannot be affected by this file.
+   ================================================================ */
+@media (max-width: 767px) {
+
+  /* --- 1. About's tail no longer covers the Video Demos heading ---
+     About is pinned for two screens and then carries on scrolling; on a
+     phone it is far taller than the screen, so its last rows (Let's
+     Connect) ended up painted over the top of #services, hiding the
+     "Recorded walkthroughs" heading and cutting its first line. The
+     sections after it now sit above it, as #projects already does. */
+  #services,
+  #testimonials,
+  .brand-three-area,
+  #contact {
+    position: relative;
+    z-index: 3 !important; /* #services carries the template's z-1 (!important) */
+  }
+
+  /* --- 2. One floating button, not two ---
+     Back-to-top and the assistant were stacked in the corner, covering
+     text; on a phone the assistant stays, back-to-top goes. */
+  .back-to-top-wrapper { display: none !important; }
+
+  /* --- 3. Thumb-sized tap targets (about 40px) --- */
+  .split-hero__social { gap: 6px; }
+  .split-hero__social a { width: 40px; height: 40px; }
+  .split-hero__social svg { width: 17px; height: 17px; }
+
+  .connect-link { padding-top: 8px; padding-bottom: 8px; }
+
+  /* category tabs: taller hit area, and a soft fade at the right edge
+     so it is clear the row scrolls sideways */
+  #projects .portfolio-pill { padding: 12px 0 11px !important; }
+  #projects .portfolio-pills {
+    padding-right: 48px;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 56px), transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 56px), transparent 100%);
+  }
+  #projects .portfolio-card.is-active .portfolio-view-btn,
+  #projects .portfolio-card.is-active .portfolio-watch-btn { min-height: 42px; }
+
+  .demos-end { padding-top: 12px; padding-bottom: 12px; }
+  .split-hero__foot a { padding-top: 12px; padding-bottom: 12px; }
+
+  .site-footer-nav,
+  .site-footer-social { row-gap: 2px !important; }
+  .site-footer-nav a,
+  .site-footer-social a { padding-top: 9px; padding-bottom: 9px; }
+
+  /* --- 4. No text below 11px --- */
+  .tool-card-name { font-size: 11px !important; }
+  .architect-badge-label { font-size: 10.5px !important; }
+  #services .feature-three-left > div:nth-of-type(3) .feature-three-text { font-size: 11px !important; }
+  #projects .portfolio-card.is-active .portfolio-tag { font-size: 11.5px !important; }
+
+  /* --- 5. Reviews heading sized for a phone (was 3 lines of 44px) --- */
+  .testimonial-three-title { font-size: clamp(27px, 8.2vw, 34px) !important; line-height: 1.08 !important; }
+}

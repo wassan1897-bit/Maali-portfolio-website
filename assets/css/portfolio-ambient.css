@@ -1,0 +1,117 @@
+/* ================================================================
+   PORTFOLIO AMBIENT BACKGROUND
+   Behind the Featured Projects stage: a soft-focus copy of the active
+   card's image, crossfading as the cards change (portfolio-ambient.js).
+
+   Two image layers swap roles on every change (the incoming one fades
+   in over the outgoing). A wash sits on top for legibility, and it
+   follows the image: cream over light images, a soft ink tint over
+   dark ones, where the section's labels also turn light
+   (#projects.is-ambient-dark). Kept out of portfolio-stage.css so the
+   stage geometry there is never touched.
+   ================================================================ */
+
+#projects { isolation: isolate; }
+
+.pf-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* dissolves into the page cream over the lower part of the section,
+     so it never ends in a hard line above the Video Demos list */
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, rgba(0, 0, 0, 0.45) 80%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 55%, rgba(0, 0, 0, 0.45) 80%, transparent 100%);
+}
+
+.pf-ambient__layer {
+  position: absolute;
+  /* slack so the blur never shows an edge; the bottom runs well past
+     the section so a card image's lower strip (buttons, toolbars)
+     stays off-screen instead of blooming into a blob */
+  inset: -6% -6% -34% -6%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(14px);
+  transform: scale(1.06);
+  opacity: 0;
+  transition: opacity 1100ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1600ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.pf-ambient__layer.is-on {
+  opacity: 1;
+  transform: scale(1.02);
+}
+
+/* the two washes: cream (light images) and ink (dark images) */
+.pf-ambient::before,
+.pf-ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transition: opacity 900ms ease;
+}
+
+.pf-ambient::before {
+  background:
+    linear-gradient(180deg, rgba(246, 240, 233, 0.8) 0%, rgba(246, 240, 233, 0.5) 16%, rgba(246, 240, 233, 0.12) 30%, rgba(246, 240, 233, 0.12) 66%, rgba(246, 240, 233, 0.6) 84%, rgba(246, 240, 233, 0.88) 100%),
+    rgba(246, 240, 233, 0.16);
+}
+
+.pf-ambient::after {
+  opacity: 0;
+  background:
+    linear-gradient(180deg, rgba(14, 13, 12, 0.72) 0%, rgba(14, 13, 12, 0.42) 16%, rgba(14, 13, 12, 0.1) 30%, rgba(14, 13, 12, 0.1) 72%, rgba(14, 13, 12, 0.6) 100%),
+    rgba(14, 13, 12, 0.12);
+}
+
+#projects.is-ambient-dark .pf-ambient::before { opacity: 0; }
+#projects.is-ambient-dark .pf-ambient::after { opacity: 1; }
+
+/* the decorative arc and sparkles read as noise over a photo */
+#projects.has-ambient .portfolio-arc,
+#projects.has-ambient .portfolio-sparkle { opacity: 0; }
+
+/* the pills sit on whatever the image puts under them: a frosted
+   cream backing keeps their dark text readable over any of it */
+#projects.has-ambient .portfolio-pill:not(.is-active) {
+  background-color: rgba(253, 252, 250, 0.78);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* the bottom corner labels get the same treatment as the wash: a
+   faint backing that keeps them legible on busy images */
+#projects.has-ambient .portfolio-foot { text-shadow: 0 0 12px rgba(246, 240, 233, 0.9); }
+#projects.is-ambient-dark .portfolio-foot { text-shadow: 0 0 12px rgba(14, 13, 12, 0.9); }
+
+/* ---------------- labels over a dark image ---------------- */
+#projects .portfolio-eyebrow,
+#projects .portfolio-heading,
+#projects .portfolio-subtitle,
+#projects .portfolio-brand-mark,
+#projects .portfolio-brand-text,
+#projects .portfolio-topright p,
+#projects .portfolio-foot {
+  transition: color 700ms ease;
+}
+
+#projects.is-ambient-dark .portfolio-heading,
+#projects.is-ambient-dark .portfolio-brand-mark { color: #f6f0e9; }
+
+#projects.is-ambient-dark .portfolio-eyebrow,
+#projects.is-ambient-dark .portfolio-subtitle,
+#projects.is-ambient-dark .portfolio-brand-text,
+#projects.is-ambient-dark .portfolio-topright p,
+#projects.is-ambient-dark .portfolio-foot { color: rgba(246, 240, 233, 0.78); }
+
+#projects.is-ambient-dark .portfolio-brand-divider { background: rgba(246, 240, 233, 0.4); }
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-preview) .pf-ambient__layer,
+  html:not(.motion-preview) .pf-ambient::before,
+  html:not(.motion-preview) .pf-ambient::after { transition: none; }
+}

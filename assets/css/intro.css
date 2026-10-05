@@ -1,0 +1,105 @@
+/* ================================================================
+   OPENING (intro.js)
+   On the hero's cream, a small window of the hero photo opens, grows
+   as the name arrives, and lands exactly on the hero's photo column;
+   then the overlay steps away and the hero's text arrives around it.
+   ================================================================ */
+
+.preloader.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: block;
+  background: #faf9f6;             /* = the hero's left panel */
+  overflow: hidden;
+  font-family: "Jost", "Inter", sans-serif;
+  color: #121212;
+}
+
+/* the window: positioned by intro.js; its inner box mirrors the hero's
+   own photo crop (hero-split.css), so the hand-off is pixel-identical */
+.intro-ap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  background: #cfc6ba;
+  will-change: left, top, width, height;
+}
+
+.intro-ap-inner {
+  position: absolute;
+  inset: -8% 0 0;
+}
+
+.intro-ap-inner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 62% 64%;
+  transform: scale(1.22);
+  transform-origin: 62% 62%;
+  filter: saturate(0.94) contrast(1.02);
+}
+
+.intro-label,
+.intro-count {
+  position: absolute;
+  margin: 0;
+  font: 500 11px/1 "Inter", sans-serif;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #6d675f;
+}
+
+.intro-label { left: 0; right: 0; text-align: center; opacity: 0; }
+.intro-label--top { top: 14vh; }
+.intro-count { left: 56px; bottom: 46px; color: #8a837a; font-variant-numeric: tabular-nums; }
+.intro-count span { color: #121212; }
+
+.intro-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12vh;
+  margin: 0;
+  text-align: center;
+  overflow: hidden;
+  font-size: clamp(48px, 7vw, 104px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.intro-name span { display: inline-block; transform: translateY(110%); }
+.intro-name strong { font-weight: 600; }
+
+@media (max-width: 767px) {
+  .intro-count { left: 22px; bottom: 28px; }
+  .intro-name { bottom: 14vh; }
+}
+
+/* the hero's own photo entrance is skipped after the opening (the
+   window has already put the photo exactly there). Only while the
+   entrance classes are on: after that the scroll exit (hero-split.js)
+   must own the photo's clip and zoom. */
+.split-hero.after-intro.is-armed .split-hero__photo-inner { clip-path: none !important; transition: none !important; }
+.split-hero.after-intro.is-armed .split-hero__photo img { scale: 1 !important; transition: none !important; }
+
+html.is-intro .ai-chat-widget { opacity: 0; visibility: hidden; }
+.ai-chat-widget { transition: opacity 400ms ease; }
+
+/* hairline progress beside the counter */
+.intro-bar {
+  position: absolute;
+  left: 160px;
+  right: 56px;
+  bottom: 51px;
+  height: 1px;
+  background: rgba(18, 18, 18, 0.1);
+}
+.intro-bar i { display: block; height: 100%; width: 100%; background: #121212; transform: scaleX(0); transform-origin: left; }
+@media (max-width: 767px) { .intro-bar { left: 120px; right: 22px; bottom: 33px; } }

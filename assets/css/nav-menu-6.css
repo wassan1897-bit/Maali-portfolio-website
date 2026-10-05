@@ -1,0 +1,445 @@
+/* ================= MENU TOGGLE (in hero-header flex) ================= */
+.hero-header .menu-toggle {
+  position: relative;
+  flex: none;
+  width: 4.5rem;
+  height: 2.25rem;
+  padding: 0.35rem 0.7rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  z-index: 5;
+  background: rgba(255, 255, 255, 0.42);
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
+  border-radius: 0.375rem;
+  box-shadow:
+    inset 0 0 0 1px rgba(18, 18, 18, 0.08),
+    0 1px 8px rgba(18, 18, 18, 0.06);
+}
+/* while open the toggle is moved into <body> (nav-menu-6.js), outside
+   .hero-header, so it carries its own box styles here */
+.menu-toggle.is-fixed {
+  position: fixed !important;
+  z-index: 110 !important;
+  box-sizing: border-box;
+  padding: 0.35rem 0.7rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  backdrop-filter: blur(12px) saturate(1.1);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.menu-toggle.is-fixed p {
+  color: #ffffff;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
+}
+.menu-toggle p {
+  position: absolute;
+  top: 50%;
+  left: 0.7rem;
+  margin: 0;
+  color: #121212;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  transform: translateY(-50%);
+  user-select: none;
+  text-shadow: none;
+  transform-origin: top left;
+  will-change: transform, opacity;
+}
+.menu-toggle p#menu-close {
+  opacity: 0;
+  transform: translateY(-50%) translateX(-0.3125rem) rotate(5deg);
+}
+
+@media (max-width: 1024px) {
+  .hero-header .menu-toggle {
+    margin-left: auto;
+  }
+}
+
+/* the chat launcher sits above everything (z 9999); step it aside while
+   the menu is open so it does not cover the menu footer */
+.ai-chat-widget {
+  transition: opacity 300ms ease, visibility 0s linear 0s;
+}
+html.menu-is-open .ai-chat-widget {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease, visibility 0s linear 300ms;
+}
+
+/* ================= MENU OVERLAY ================= */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100vw;
+  height: 100svh;
+  background-color: #0f0f0f;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%);
+  pointer-events: none;
+}
+.menu-overlay.is-open {
+  pointer-events: auto;
+}
+
+.menu-content {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  transform-origin: left bottom;
+  opacity: 0.25;
+  transform: translateX(-6.25rem) translateY(-6.25rem) scale(1.5) rotate(-15deg);
+  will-change: opacity, transform;
+}
+.menu-items,
+.menu-footer {
+  display: flex;
+  width: 100%;
+  padding: 2.5rem;
+  gap: 2.5rem;
+}
+.menu-overlay .col-lg {
+  flex: 3;
+}
+.menu-overlay .col-sm {
+  flex: 2;
+}
+
+.menu-items .col-lg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* ---------------- Menu photo card ----------------
+   The same construction as the About portrait (about-architect.css):
+   a background plate clipped to a rounded card, and Maali's transparent
+   cutout on a layer above it, allowed past the card's top edge so his
+   head breaks out of the frame. nav-menu-6.js writes --tilt-x/--tilt-y
+   (degrees) and --par-x/--par-y (px) from the pointer, so the card turns
+   toward the cursor and the two layers slide at different depths. */
+.menu-preview-img {
+  position: relative;
+  width: 45%;
+  height: 100%;
+  /* the cutout rises above the card, so nothing here may clip */
+  overflow: visible;
+  container-type: size;
+}
+
+.menu-card {
+  --par-x: 0px;
+  --par-y: 0px;
+  /* Portrait (Work, Video Demos, Contact): kept between 0.55 and 0.62
+     wide-to-tall (the posters are 0.615), so no scene is ever cropped
+     past the 3% slack plus the margins its content was laid out with. */
+  --card-w: min(100cqw, calc(92cqh * 0.62));
+  --card-h: min(92cqh, calc(100cqw / 0.55));
+  position: absolute;
+  top: 8%;
+  bottom: 0;
+  left: calc(50% - var(--card-w) / 2);
+  width: var(--card-w);
+  height: var(--card-h);
+  margin: auto 0;          /* centred in the space below the headroom */
+  transition: width 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    left 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* flat and unfiltered: a 3D transform or filter here makes the
+     browser rasterise the screenshot and it renders soft */
+  transform: none;
+  /* the screenshot scenes size themselves from the card (cqw / cqh) */
+  container-type: size;
+}
+
+.menu-scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 650ms;
+}
+
+.menu-scene.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 650ms cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+}
+
+.menu-scene-plate {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  /* the far layer moves against the pointer */
+  transform: translate3d(calc(var(--par-x) * -0.6), calc(var(--par-y) * -0.6), 0);
+}
+
+.menu-scene-plate img {
+  position: absolute;
+  inset: -3%;               /* slack so the parallax never shows an edge */
+  width: 106%;
+  height: 106%;
+  max-width: none;
+  object-fit: cover;
+  will-change: transform, opacity;
+}
+
+/* Clips the cutout at the card's sides and bottom only: the top of the
+   box sits 14% above the card, so the head can break out of the frame.
+   The box moves exactly with the plate, so where a cutout is cropped by
+   the card (the seated shots) its cut edges stay on the card's edges;
+   the depth comes from .menu-scene-pop-inner sliding further than the
+   plate. (That offset lives on a wrapper because GSAP owns the img's
+   transform, and GSAP also resets a CSS `translate` on what it animates.) */
+.menu-scene-pop {
+  position: absolute;
+  top: -14%;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  border-radius: 0 0 6px 6px;
+  transform: translate3d(calc(var(--par-x) * -0.6), calc(var(--par-y) * -0.6), 0);
+}
+
+.menu-scene-pop-inner {
+  position: absolute;
+  inset: 0;
+  /* near layer: travels with the pointer, against the plate */
+  transform: translate3d(calc(var(--par-x) * 1.6), calc(var(--par-y) * 1.6), 0);
+}
+
+/* --pop-h: cutout height as % of the CARD; --pop-b: its bottom offset as
+   % of the card; --pop-x: its horizontal centre. The box is 114% of the
+   card tall, hence the division. */
+.menu-scene-pop img {
+  position: absolute;
+  bottom: calc(var(--pop-b, 0) * 1% / 1.14);
+  left: var(--pop-x, 50%);
+  height: calc(var(--pop-h, 100) * 1% / 1.14);
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.35));
+  will-change: transform, opacity;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Landscape (Home, About): the full desktop page, 1440x900, so the card
+   takes that exact 16:10 shape and grows past its narrow column, up to
+   90% of the image column (the column is 45% of it: 200cqw) or the
+   available height, whichever is smaller. */
+.menu-card.is-landscape {
+  --card-w: min(200cqw, calc(92cqh * 1.6));
+  --card-h: calc(var(--card-w) / 1.6);
+}
+
+/* The page is shown whole: no parallax slack around the screenshot
+   (the tilt carries the 3D), and the card's shape equals the image's,
+   so `cover` crops nothing once the card has settled. */
+.menu-scene--page .menu-scene-plate img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------------- Section scenes (Work, Video Demos, Contact) ----------------
+   Each is a 640x1040 poster built from real captures of that section
+   (the plate) plus the section's key element lifted off it (the float):
+   the project card, the video card, the call-to-action buttons. The
+   plate covers the card like object-fit: cover, with the same 3% slack
+   on every side as the photo plates; --s is the size of one poster
+   pixel at that scale, so the float can be placed in poster
+   coordinates (--fx/--fy: its centre, offset from the poster's centre;
+   --fw: its width) and stays over its slot at any card shape. */
+.menu-scene--shot {
+  --s: max(calc(1.06 * 100cqh / 1040), calc(1.06 * 100cqw / 640));
+}
+
+.menu-scene--shot .menu-scene-plate {
+  background: var(--shot-bg, #f6f0e9);
+}
+
+.menu-scene--shot .menu-scene-plate img {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: calc(640 * var(--s));
+  height: calc(1040 * var(--s));
+  transform: translate(-50%, -50%);   /* GSAP keeps this as xPercent/yPercent */
+  object-fit: fill;
+}
+
+/* The near layer. Not clipped by the plate, so the lifted element may
+   overhang the card; at rest it sits exactly over its slot in the plate,
+   and with the pointer it travels the opposite way to the plate. */
+.menu-scene-float {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translate3d(var(--par-x), var(--par-y), 0);
+}
+
+.menu-scene-float img {
+  position: absolute;
+  top: calc(50% + var(--fy, 0) * var(--s));
+  left: calc(50% + var(--fx, 0) * var(--s));
+  width: calc(var(--fw, 520) * var(--s));
+  height: auto;
+  max-width: none;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 22px 30px rgba(38, 26, 14, 0.28)) drop-shadow(0 4px 10px rgba(38, 26, 14, 0.14));
+  will-change: transform, opacity;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-preview) .menu-card { transform: none; transition: none; }
+  html:not(.motion-preview) .menu-scene-plate,
+  html:not(.motion-preview) .menu-scene-pop,
+  html:not(.motion-preview) .menu-scene-pop-inner,
+  html:not(.motion-preview) .menu-scene-float { transform: none; }
+  html:not(.motion-preview) .menu-scene,
+  html:not(.motion-preview) .menu-scene.is-active { transition: none; }
+}
+
+.menu-items .col-sm {
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 0;
+  gap: 2.5rem;
+}
+.menu-links,
+.menu-socials {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.menu-overlay .link,
+.menu-overlay .social {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+  padding-bottom: 0.375rem;
+}
+.menu-overlay .link a,
+.menu-overlay .social a {
+  position: relative;
+  display: inline-block;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 300;
+  opacity: 0.25;
+  transform: translateY(120%);
+  will-change: transform;
+  transition: color 500ms;
+  user-select: none;
+}
+.menu-overlay .link a {
+  font-size: 3.5rem;
+  letter-spacing: -0.02rem;
+}
+.menu-overlay .social a {
+  color: #8f8f8f;
+  font-size: 1rem;
+}
+.menu-overlay .link a::after,
+.menu-overlay .social a::after,
+.menu-footer a::after {
+  content: "";
+  position: absolute;
+  top: 102.5%;
+  left: 0;
+  width: 100%;
+  height: 0.125rem;
+  background-color: #ffffff;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 300ms cubic-bezier(0.6, 0, 0.4, 1);
+}
+
+.menu-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.menu-footer a {
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 300;
+  user-select: none;
+}
+.menu-footer .col-sm {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (max-width: 56.25rem) {
+  .menu-items .col-lg {
+    display: none;
+  }
+  .menu-items {
+    padding: 5.5rem 1.5rem 0;
+  }
+  .menu-items .col-sm {
+    padding: 0;
+    gap: 2rem;
+  }
+  .menu-overlay .link a {
+    font-size: clamp(2.25rem, 10.5vw, 3.5rem);
+    white-space: nowrap;
+  }
+  /* one row: Book a Call ... Close  Send a Message */
+  .menu-footer {
+    justify-content: space-between;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+  .menu-footer .col-lg,
+  .menu-footer .col-sm {
+    flex: none;
+  }
+  .menu-footer .col-sm {
+    gap: 1.25rem;
+  }
+  .menu-footer a {
+    white-space: nowrap;
+  }
+  .menu-overlay .link a::after,
+  .menu-overlay .social a::after,
+  .menu-footer a::after {
+    display: none;
+  }
+}
+@media (any-hover: hover) {
+  .menu-overlay .social a:hover {
+    color: #ffffff;
+  }
+  .menu-overlay .link a:hover::after,
+  .menu-overlay .social a:hover::after,
+  .menu-footer a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* page captures: crisp, a plain shadow, quicker crossfade */
+.menu-scene--page .menu-scene-plate {
+  border-radius: 10px;
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+.menu-scene--page .menu-scene-plate img { image-rendering: auto; }
+.menu-scene { transition-duration: 380ms !important; }

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="INDEX,FOLLOW" />
+    <meta
+      name="description"
+      content="Four RAG approaches compared side by side (vector search, graph RAG and two hosted file-search options) so a client could choose between them on evidence. Includes the ingestion workflow that dedupes files and handles spreadsheets, documents and PDFs differently."
+    />
+    <title>Enterprise Multi-LLM RAG &amp; Data Ingestion · Case Study · Autoany</title>
+    <link rel="icon" type="image/svg+xml" href="../../assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/images/favicon-32.png" />
+    <link rel="apple-touch-icon" href="../../assets/images/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Enterprise Multi-LLM RAG &amp; Data Ingestion · Case Study · Autoany" />
+    <meta property="og:description" content="Four RAG approaches compared side by side (vector search, graph RAG and two hosted file-search options) so a client could choose between them on evidence. Includes the ingestion workflow that dedupes files and handles spreadsheets, documents and PDFs differently." />
+    <meta name="twitter:card" content="summary" />
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Caveat:wght@600;700&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../../assets/css/theme.css?v=4" />
+    <link rel="stylesheet" href="../../assets/css/project-detail.css?v=16" />
+  </head>
+
+  <body class="pd-page">
+    <header class="pd-header">
+      <div class="pd-container pd-header-inner">
+        <a class="pd-brand" href="/index.html#home">
+          <span class="pd-brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 46 34" fill="none" stroke="currentColor" stroke-width="5.4" stroke-linejoin="miter" stroke-linecap="butt">
+              <path d="M3.5 31.5 L15.5 3.5 L25 25.5" />
+              <path d="M21.5 8 L31.5 31 L42.5 4.5" />
+            </svg>
+          </span>
+          <span class="pd-brand-divider" aria-hidden="true"></span>
+          <span class="pd-brand-text">Automate<br />Build<br />Improve</span>
+        </a>
+
+        <nav class="pd-nav" aria-label="Primary">
+          <a href="/index.html#home">Home</a>
+          <a href="/index.html#projects">Portfolio</a>
+          <a href="/index.html#about">About</a>
+          <a href="/index.html#contact">Contact</a>
+        </nav>
+
+        <a class="pd-btn pd-btn--solid pd-header-cta" href="/index.html#contact">
+          <span>Let’s Build</span>
+          <span class="pd-btn-icon pd-btn-icon--arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="13.5 5.5 20 12 13.5 18.5"/></svg>
+          </span>
+        </a>
+      </div>
+    </header>
+
+    <main data-project-slug="enterprise-rag-data-ingestion">
+      <div class="pd-container pd-back-row">
+        <a class="pd-back-link" href="/index.html#projects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10.5 5.5 4 12 10.5 18.5"/></svg>
+          <span>Back to Portfolio</span>
+        </a>
+      </div>
+
+      <!-- ======================== Hero ======================== -->
+      <section class="pd-hero">
+        <div class="pd-container pd-hero-grid">
+          <div class="pd-hero-left">
+            <div class="pd-breadcrumb" data-pd-breadcrumb></div>
+
+            <h1 class="pd-title" data-pd-title></h1>
+
+            <p class="pd-description" data-pd-description></p>
+
+            <div class="pd-actions" data-pd-actions></div>
+
+            <div class="pd-meta-tags" data-pd-meta-tags></div>
+
+            <div class="pd-annotation-row">
+              <div>
+                <p class="pd-annotation" data-pd-annotation></p>
+                <span class="pd-annotation-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 46 22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4c10 14 24 16 40 10" /><path d="M34 10l8 4-3 8" /></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pd-hero-right">
+            <div class="pd-visual-frame">
+              <div data-pd-visual></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================== Metrics + tech stack ======================== -->
+      <section class="pd-strip">
+        <div class="pd-container">
+          <div class="pd-strip-card">
+            <div class="pd-metrics" data-pd-metrics></div>
+            <span class="pd-strip-divider" aria-hidden="true"></span>
+            <div class="pd-tech">
+              <span class="pd-tech-label">Tech Stack</span>
+              <div class="pd-tools" data-pd-tools></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================== Content cards ======================== -->
+      <section class="pd-cards-section">
+        <div class="pd-container pd-cards" data-pd-cards></div>
+      </section>
+
+      <!-- ======================== Testimonial ======================== -->
+      <section class="pd-review-section">
+        <div class="pd-container">
+          <div class="pd-review-card">
+            <span class="pd-review-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 24" fill="currentColor"><path d="M9.2 0C4.1 2.6 0 7.9 0 14.1 0 19.4 3.3 23 7.7 23c3.7 0 6.3-2.9 6.3-6.3 0-3.3-2.3-5.7-5.3-5.7-.6 0-1.1.1-1.4.2C7.9 7.4 10.9 4 15 1.9L9.2 0Zm17 0c-5.1 2.6-9.2 7.9-9.2 14.1 0 5.3 3.3 8.9 7.7 8.9 3.7 0 6.3-2.9 6.3-6.3 0-3.3-2.3-5.7-5.3-5.7-.6 0-1.1.1-1.4.2C24.9 7.4 27.9 4 32 1.9L26.2 0Z" /></svg>
+            </span>
+
+            <div class="pd-review-body">
+              <p class="pd-review-quote">“<span data-pd-review-quote></span>”</p>
+              <ul class="pd-review-highlights" data-pd-review-highlights></ul>
+            </div>
+
+            <div class="pd-review-meta">
+              <div class="pd-review-stars" data-pd-review-stars></div>
+              <p class="pd-review-identity" data-pd-review-identity></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================== Bottom CTA ======================== -->
+      <section class="pd-cta-section">
+        <div class="pd-container">
+          <div class="pd-cta-card">
+          <div class="pd-cta-main">
+            <p class="pd-cta-label" data-pd-cta-label></p>
+            <h2 class="pd-cta-heading" data-pd-cta-heading></h2>
+          </div>
+          <p class="pd-cta-supporting" data-pd-cta-supporting></p>
+          <p class="pd-cta-decorative" data-pd-cta-decorative></p>
+            <a class="pd-btn pd-btn--solid pd-cta-button" data-pd-cta-button href="#"></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="../../assets/js/project-detail-data.js?v=17"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="../../assets/js/motion-preview.js?v=3"></script>
+    <script src="../../assets/js/project-detail.js?v=20"></script>
+    <script src="../../assets/js/project-detail-arrival.js?v=1"></script>
+  </body>
+</html>
